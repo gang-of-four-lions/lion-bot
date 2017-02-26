@@ -2,10 +2,10 @@
   "name": "lion-bot",
   "version": "0.0.1",
   "description": "a simple slack slashbot",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",

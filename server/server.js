@@ -10,11 +10,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.use((req, res, next) => {
-    console.log(req.body);
-    next();
-});
-
 const NUM_ITEMS = 5;
 
 //All slash commands are sent as posts by default
@@ -43,7 +38,7 @@ app.post('/api/*', (req, res) => {
              return;
         }
     }
-    res.json({error: 'no command'});
+    res.json({text: 'error: no command'});
     //res.send(theResponse);
 });
 
@@ -53,4 +48,5 @@ app.get('/', (req, res) => {
 	res.sendFile("index.html",{root: __dirname+"/public/" });
 });
 
-app.listen(port, () => console.log(`listening on port ${port}`));
+module.exports = app;
+module.exports.port = port;

@@ -1,10 +1,10 @@
 const expect = require('chai').expect;
-
-const request = require('supertest')(`http://localhost:${process.env.PORT || 3000}`);;
+const app = require('../server/server.js');
+const request = require('supertest')
 
 describe('server', function() {
   it('should return help text for the help command', function(done) {
-    request
+    request(app)
       .post('/api/anything')
       .send('text=help')
       .send('command=/lion-bot')
