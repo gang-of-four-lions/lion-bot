@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 
 const port = process.env.PORT || 3000;
 
@@ -45,7 +46,7 @@ app.post('/api/*', (req, res) => {
 //use standard get '/' to deliver the landing page
 app.get('/', (req, res) => {
 	//res.end('lion-bot says hello!');
-	res.sendFile("index.html",{root: __dirname+"/public/" });
+	res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
 module.exports = app;

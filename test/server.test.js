@@ -13,4 +13,11 @@ describe('server', function() {
       })
       .end(done);
   });
+
+  it('GET "/" should return the landing page', function(done){
+    request(app)
+      .get('/')
+      .expect(200)
+      .end(done);
+  });
 });
