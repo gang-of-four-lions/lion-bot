@@ -11,6 +11,8 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
 const NUM_ITEMS = 5;
 
 //All slash commands are sent as posts by default
