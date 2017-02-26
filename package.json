@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/gang-of-four-lions/lion-bot#readme",
   "dependencies": {
+    "body-parser": "^1.16.1",
     "express": "^4.14.1"
   },
   "devDependencies": {
