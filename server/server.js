@@ -18,10 +18,10 @@ const NUM_ITEMS = 5;
 //All slash commands are sent as posts by default
 //I think we should setup the routes in /api/ so it won't get in the way of later expansion
 app.post('/api/*', (req, res) => {
-    // if(req.body.token !== process.env.TOKEN){
-    //     res.end("Invaild token.");
-    //     return;
-    // } //Validate token
+    if(req.body.token !== process.env.TOKEN){
+        res.end("Invaild token.");
+        return;
+    } //Validate token
 
     //Here we will setup the response JSON object probably with a seperate function
     const RESPONSE_URL = req.body.response_url;
