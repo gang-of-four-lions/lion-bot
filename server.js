@@ -6,12 +6,6 @@ const app = express();
 
 const bodyParser = require('body-parser');
 
-//We need this to keep the heroku server live, or it will timeout after 30 mins
-var http = require("http");
-setInterval(function() {
-    http.get("http://lion-bot.herokuapp.com/");
-}, 600000); // every 10 minutes (600000)
-
 app.use(bodyParser.urlencoded({
     extended: true
 }));
