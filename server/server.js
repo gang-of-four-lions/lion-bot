@@ -54,7 +54,7 @@ app.post('/api/*', (req, res) => {
       return;
     }
     
-    if (req.body.text === '') {
+    if (req.body.text === ' ') {
       let rand = getRandomDoc();
       let randomText = {
         response_type: `in_channel`,
