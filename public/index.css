@@ -1,0 +1,50 @@
+#root {
+  max-width: 1000px;
+  margin: 2em auto 0 auto;
+}
+
+#root > div {
+  margin-top: 2em;
+}
+
+#general, #help, #more {
+  border:1px solid #AAA;
+  border-radius: 10px;
+  padding: 0.5em 2em 0.5em 2em;
+  background-color: #DDD;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  background: linear-gradient(to top, #999 0%, #DDD 90%, #999 100%);
+}
+
+p {
+  margin-top: .5em;
+  margin-bottom: .5em;
+}
+
+strong {
+  font-weight: 600;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Neuton', serif;
+  font-weight: 600;
+  margin-top: 0;
+}
+
+h2 {
+  border-bottom: 1px solid black;
+}
+
+strong {
+  color: #050;
+}
+
+.inline-block {
+  display: inline-block;
+  clear: none;
+  vertical-align: middle;
+}
