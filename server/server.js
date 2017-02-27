@@ -83,7 +83,8 @@ function getRandomDoc() {
       { $sample: { size: 1 } }
     );
     db.close();
-    return rand;
+    let doc = rand.toArray();
+    return doc[1];
   });
 }
 
