@@ -80,10 +80,10 @@ function getRandomDoc() {
   MongoClient.connect(uri, function(err, db) {
     if (err) { return; }
     let rand = db['lion-bot'].aggregate(
-      { $sample: { size: 1 } }
+      [{ $sample: { size: 1 } }]
     );
-    db.close();
     let doc = rand.toArray();
+    db.close();
     return doc[0];
   });
 }
