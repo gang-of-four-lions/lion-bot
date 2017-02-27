@@ -31,7 +31,7 @@ footer, header, hgroup, menu, nav, section {
 	display: block;
 }
 body {
-	line-height: 1;
+	line-height: 1.1;
 }
 ol, ul {
 	list-style: none;
@@ -54,26 +54,32 @@ table {
 /* general */
 body, html {
   background-color: #fafafa;
-  font-family: 'PT Sans', sans-serif;
-  font-weight: 400;
-  font-size: 17px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 19px;
 }
 
 strong {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 700;
-  letter-spacing: .1em;
+  font-family: 'PT Sans Caption', sans-serif;
+  font-weight: 400;
+  padding-bottom: .2em;
 }
-
+p + p {
+  margin-top: .2em;
+}
 h1 {
-    font-size: 50px;
+    font-size: 60px;
 }
 
 h2 {
-    font-size: 40px;
+    font-size: 45px;
+}
+em {
+    font-style: oblique;
 }
 
 /* additional classes */
@@ -84,29 +90,48 @@ h2 {
 }
 
 .section {
-  max-width: 1000px;
+  max-width: 600px;
   margin: 0 auto;
+  padding: 0 .5em;
+  transform: skewY(.5deg);
 }
 
 /* wrappers */
 #root > div {
   /* all wrappers */
-  padding-top: 4em;
-  padding-bottom: 4em;
   width: 100%;
+  transform: skewY(-.5deg);
 }
 
 #intro_wrap {
+  margin-top: -5em;
+  padding-top: 9em;
+  padding-bottom: 2em;
   background-color: #e65100;
   color: #FFF;
+  background-image: url(./img/lionbot-background.png);
+  background-repeat: no-repeat;
+  background-blend-mode: luminosity;
+  background-position-x: -100px;
 }
 #sample_wrap {
+  padding-top: 2em;
+  padding-bottom: 2em;
   background-color: #FFF;
 }
+#screenshot {
+  width: 100%;
+  max-width: 473px;
+}
 #usage_wrap {
+  padding-top: 2em;
+  padding-bottom: 2em;
   background-color: #fafafa;
 }
 #credits_wrap {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  margin-bottom: 2em;
   background-color: #e4e4e4;
 }
 
