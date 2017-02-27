@@ -30,27 +30,36 @@ app.post('/api/*', (req, res) => {
     if (req.body.text === 'help') {
       let helpText = {
         response_type: `ephemeral`, // only 1 user will see the response
-        text: [`/lion-bot help:`,
-          `*/lion-bot:* shows a random item`,
-          `*/lion-bot [id]:* shows the item with the specified id (0 to ${NUM_ITEMS - 1})`,
-          `*/lion-bot filtered:* shows a SFW random item`,
-          `*/lion-bot filtered [id]:* shows the SFW item with the specified id (0 to ${NUM_ITEMS - 1})`,
-          `*/lion-bot help:* shows this text`].join('\n'),
+        text: [`*lion-bot help*`,
+          `*/lion-bot* shows a random item`,
+          `*/lion-bot [id]* shows the item with the specified id (0 to ${NUM_ITEMS - 1})`,
+          `*/lion-bot filtered* shows a SFW random item`,
+          `*/lion-bot filtered [id]* shows the SFW item with the specified id (0 to ${NUM_ITEMS - 1})`,
+          `*/lion-bot help* shows this text`].join('\n'),
 
       }
       res.json(helpText);
       return;
     }
+
+    if (req.body.text === 'filtered') {
+      let filteredText = {
+        response_type: `in_channel`, // all user in channel will see the response
+        text: [`some filtered item`,
+          `randomly selected from database`].join('\n'),
+      }
+      res.json(filteredText);
+      return;
+    }
+
   }
   res.json({
     text: 'error: no command'
   });
-//res.send(theResponse);
 });
 
 //use standard get '/' to deliver the landing page
 app.get('/', (req, res) => {
-  //res.end('lion-bot says hello!');
   res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
