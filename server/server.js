@@ -84,7 +84,7 @@ function getRandomDoc() {
     );
     db.close();
     let doc = rand.toArray();
-    return doc[1];
+    return doc[0];
   });
 }
 
