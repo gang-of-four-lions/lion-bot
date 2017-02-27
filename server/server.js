@@ -1,5 +1,7 @@
 const express = require('express');
 const path = require('path');
+const MongoClient = require('mongodb').MongoClient;
+const uri = process.env.MONGOURI;
 
 const port = process.env.PORT || 3000;
 
@@ -37,7 +39,7 @@ app.post('/api/*', (req, res) => {
           `*/lion-bot filtered [id]* shows the SFW item with the specified id (0 to ${NUM_ITEMS - 1})`,
           `*/lion-bot help* shows this text`].join('\n'),
 
-      }
+      };
       res.json(helpText);
       return;
     }
@@ -47,8 +49,18 @@ app.post('/api/*', (req, res) => {
         response_type: `in_channel`, // all user in channel will see the response
         text: [`some filtered item`,
           `randomly selected from database`].join('\n'),
-      }
+      };
       res.json(filteredText);
+      return;
+    }
+    
+    if (req.body.text === '') {
+      let rand = getRandomDoc();
+      let randomText = {
+        response_type: `in_channel`,
+        text: [rand.text, rand.author].join('\n'),
+      };
+      res.json(randomText);
       return;
     }
 
@@ -62,6 +74,18 @@ app.post('/api/*', (req, res) => {
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
+
+//function to grab a random document from db
+function getRandomDoc() {
+  MongoClient.connect(uri, function(err, db) {
+    if (err) { return; }
+    let rand = db['lion-bot'].aggregate(
+      { $sample: { size: 1 } }
+    );
+    db.close();
+    return rand;
+  });
+}
 
 module.exports = app;
 module.exports.port = port;
