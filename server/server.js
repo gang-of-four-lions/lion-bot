@@ -18,6 +18,18 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 const NUM_ITEMS = 5;
 
+function formateResponse(doc){
+  let out = {};
+  if(doc.text!==""){ out.text=doc.text; }
+  if(doc.image_url!==""){
+    out.attachments = {
+      image_url : doc.image_url
+    }
+  }
+  //You can apply any additional formatting here
+  return out;
+};
+
 //All slash commands are sent as posts by default
 //I think we should setup the routes in /api/ so it won't get in the way of later expansion
 app.post('/api/*', (req, res) => {
@@ -71,7 +83,7 @@ app.post('/api/*', (req, res) => {
               return null;
             }
             db.close();
-            let responseObject = doc[0];
+            let responseObject = formateResponse(doc[0]);
             responseObject.response_type = `in_channel`; // all user in channel will see the response
             res.status(200).json(responseObject);
             return;
@@ -84,11 +96,6 @@ app.post('/api/*', (req, res) => {
 
     if (req.body.text === '') {
       let randomItem = getRandomDoc(res);
-      //let randomText = {
-      //  response_type: `in_channel`,
-      //  text: [rand.text, rand.author].join('\n'),
-      //};
-      //res.json(randomText);
       return randomItem;
     }
 
@@ -116,7 +123,7 @@ function getRandomDoc(res) {
           return null;
         }
         db.close();
-        let responseObject = doc[0];
+        let responseObject = formateResponse(doc[0]);
         responseObject.response_type = `in_channel`;
         res.status(200).json(responseObject);
       });
