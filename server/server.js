@@ -1,3 +1,4 @@
+"use strict";
 const express = require('express');
 const path = require('path');
 const MongoClient = require('mongodb').MongoClient;
@@ -28,7 +29,7 @@ app.post('/api/*', (req, res) => {
   //Here we will setup the response JSON object probably with a seperate function
   const RESPONSE_URL = req.body.response_url;
   res.status(200); //We must include this with all JSON object responses
-  if (req.body.command === '/lion-bot') {
+  if (req.body.command === '/testing') {
     if (req.body.text === 'help') {
       let helpText = {
         response_type: `ephemeral`, // only 1 user will see the response
@@ -54,14 +55,33 @@ app.post('/api/*', (req, res) => {
       return;
     }
     
-    if (req.body.text === '') {
-      let rand = getRandomDoc();
-      let randomText = {
-        response_type: `in_channel`,
-        text: [rand.text, rand.author].join('\n'),
-      };
-      res.json(randomText);
+    if(!isNaN(parseInt(req.body.text)) ){
+      const ind= parseInt(req.body.text);
+      MongoClient.connect(uri, function(err, db) {
+        if (err) { res.status(200).send("DB Error"); return; }
+        let col = db.collection("lion-bot");
+        col.count().then((cnt)=>{ 
+          if(ind<0 || ind>=cnt){ res.status(200).send("Invaild index. Select a # between 0 and "+(cnt-1)); return; }
+          col.find().skip(ind).limit(1).toArray((err,doc)=>{
+            if(err){ return null; }
+            db.close();
+            res.status(200).json(doc[0]);
+            return;
+          });
+          return;
+        }); 
+      });
       return;
+    }
+    
+    if (req.body.text === '') {
+      let rand = getRandomDoc(res);
+      //let randomText = {
+      //  response_type: `in_channel`,
+      //  text: [rand.text, rand.author].join('\n'),
+      //};
+      //res.json(randomText);
+      return rand;
     }
 
   }
@@ -76,15 +96,25 @@ app.get('/', (req, res) => {
 });
 
 //function to grab a random document from db
-function getRandomDoc() {
+function getRandomDoc(res) {
   MongoClient.connect(uri, function(err, db) {
     if (err) { return; }
+    var col = db.collection("lion-bot");
+    col.count().then((cnt)=>{
+      col.find().skip(Math.floor(Math.random()*(cnt-1)) ).limit(1).toArray((err,doc)=>{ 
+        if(err){ return null; }
+        db.close();
+        res.status(200).json(doc[0]);
+      });
+    });
+    /*
     let rand = db['lion-bot'].aggregate(
       [{ $sample: { size: 1 } }]
     );
     let doc = rand.toArray();
     db.close();
-    return doc[0];
+    return doc[0].text;
+    */
   });
 }
 
