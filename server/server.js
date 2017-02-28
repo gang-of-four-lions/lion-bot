@@ -54,34 +54,42 @@ app.post('/api/*', (req, res) => {
       res.json(filteredText);
       return;
     }
-    
-    if(!isNaN(parseInt(req.body.text)) ){
-      const ind= parseInt(req.body.text);
+
+    if (!isNaN(parseInt(req.body.text))) {
+      const ind = parseInt(req.body.text);
       MongoClient.connect(uri, function(err, db) {
-        if (err) { res.status(200).send("DB Error"); return; }
+        if (err) {
+          res.status(200).send("DB Error"); return;
+        }
         let col = db.collection("lion-bot");
-        col.count().then((cnt)=>{ 
-          if(ind<0 || ind>=cnt){ res.status(200).send("Invaild index. Select a # between 0 and "+(cnt-1)); return; }
-          col.find().skip(ind).limit(1).toArray((err,doc)=>{
-            if(err){ return null; }
+        col.count().then((cnt) => {
+          if (ind < 0 || ind >= cnt) {
+            res.status(200).send("Invaild index. Select a # between 0 and " + (cnt - 1)); return;
+          }
+          col.find().skip(ind).limit(1).toArray((err, doc) => {
+            if (err) {
+              return null;
+            }
             db.close();
-            res.status(200).json(doc[0]);
+            let responseObject = doc[0];
+            responseObject.response_type = `in_channel`; // all user in channel will see the response
+            res.status(200).json(responseObject);
             return;
           });
           return;
-        }); 
+        });
       });
       return;
     }
-    
+
     if (req.body.text === '') {
-      let rand = getRandomDoc(res);
+      let randomItem = getRandomDoc(res);
       //let randomText = {
       //  response_type: `in_channel`,
       //  text: [rand.text, rand.author].join('\n'),
       //};
       //res.json(randomText);
-      return rand;
+      return randomItem;
     }
 
   }
@@ -98,23 +106,29 @@ app.get('/', (req, res) => {
 //function to grab a random document from db
 function getRandomDoc(res) {
   MongoClient.connect(uri, function(err, db) {
-    if (err) { return; }
+    if (err) {
+      return;
+    }
     var col = db.collection("lion-bot");
-    col.count().then((cnt)=>{
-      col.find().skip(Math.floor(Math.random()*(cnt-1)) ).limit(1).toArray((err,doc)=>{ 
-        if(err){ return null; }
+    col.count().then((cnt) => {
+      col.find().skip(Math.floor(Math.random() * (cnt - 1))).limit(1).toArray((err, doc) => {
+        if (err) {
+          return null;
+        }
         db.close();
-        res.status(200).json(doc[0]);
+        let responseObject = doc[0];
+        responseObject.response_type = `in_channel`;
+        res.status(200).json(responseObject);
       });
     });
-    /*
-    let rand = db['lion-bot'].aggregate(
-      [{ $sample: { size: 1 } }]
-    );
-    let doc = rand.toArray();
-    db.close();
-    return doc[0].text;
-    */
+  /*
+  let rand = db['lion-bot'].aggregate(
+    [{ $sample: { size: 1 } }]
+  );
+  let doc = rand.toArray();
+  db.close();
+  return doc[0].text;
+  */
   });
 }
 
