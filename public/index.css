@@ -58,9 +58,23 @@ body, html {
   font-weight: 300;
   font-size: 19px;
 }
-
+::selection { 
+  color: white;
+  background: rgba(0, 0, 0, 0.24);
+}
 strong {
   font-weight: 600;
+}
+
+code {
+  font-weight: 400;
+  border-radius: 2px;
+  background-color: #FFF;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 15px;
+  padding: .05em .2em .2em;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -72,7 +86,10 @@ p + p {
   margin-top: .2em;
 }
 h1 {
-    font-size: 60px;
+  font-size: 60px;
+  text-shadow: 0px 4px 3px rgba(0,0,0,0.1),
+            0px 8px 13px rgba(0,0,0,0.1),
+            0px 18px 23px rgba(0,0,0,0.1);
 }
 
 h2 {
@@ -90,7 +107,7 @@ em {
 }
 
 .section {
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 0 .5em;
   transform: skewY(.5deg);
@@ -113,7 +130,10 @@ em {
   background-repeat: no-repeat;
   background-blend-mode: luminosity;
   background-position-x: -100px;
+  text-shadow: 0px 2px 4px rgba(0,0,0,0.25);
+  box-shadow: inset 0px 0px 80px rgba(0, 0, 0, 0.1);
 }
+
 #sample_wrap {
   padding-top: 2em;
   padding-bottom: 2em;
@@ -127,13 +147,47 @@ em {
   padding-top: 2em;
   padding-bottom: 2em;
   background-color: #fafafa;
+  background-image: url(./img/lionbot-background.png); /*fallback*/
+  background-image: linear-gradient(to right, #fafafa, rgba(250, 250, 250, 0.7)), url(./img/lionbot-background.png);
+  background-position-x: 100%;
+  background-position-x: 100%, 120%;
+  background-repeat: no-repeat;
+  background-repeat: no-repeat, no-repeat;
+  background-blend-mode: normal, multiply;
+  text-shadow: 0px 2px 4px rgba(0,0,0,0.05);
+  box-shadow: inset 0px 0px 80px rgba(0, 0, 0, 0.01);
 }
+
 #credits_wrap {
   padding-top: 1em;
   padding-bottom: 1em;
-  margin-bottom: 2em;
-  background-color: #e4e4e4;
+  /*margin-bottom: 2em;*/
+  color: #fafafa;
+  font-size: .9em;
+  background-color: #212121;
+  transform: skewY(0deg)!important;
+}
+#credits_wrap .section {
+  transform: skewY(0deg);
 }
 
+#credits_wrap a {
+  color: #FFB300;
+  text-decoration: none;
+  transition: color 0.5s ease;
+}
+#credits_wrap a:hover {
+  color: #FF6F00;
+  transition: color 0.5s ease;
+}
+#logo {
+  max-width: 40px;
+  margin-right: .5em;
+  transition: opacity 0.5s ease;
+}
+#logo:hover {
+  opacity: .9;
+  transition: opacity 0.5s ease;
+}
 
 

@@ -1,10 +1,16 @@
-# lion-bot
+# lion-bot for Slack
 
-Just another clone of **GFDA** Slack bot
+Do you and your team use Slack?
+Now you can get some good jokes delivered to you right inside the app.
+
+The Lion-bot has compiled jokes from more than 1 website, and it can send you a joke whenever you ask it to.
+
+You can smile, or act like a grumpy cat, it’s all up to you.
 
 ## Usage
 
 Use anywhere inside **chingu-lions** Slack team.
+Or wait for us to complete our work. We’re moving pretty fast this time.
 
 `/lion-bot` shows a random item
 
@@ -16,6 +22,10 @@ Use anywhere inside **chingu-lions** Slack team.
 
 `/lion-bot help` shows list of commands
 
-## Credits
+## Development
 
-Brought to you by **The Gang of Four Lions**
+`npm i` installs packages
+
+`npm start` starts server
+
+`npm run test` runs tests
