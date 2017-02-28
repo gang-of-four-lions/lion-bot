@@ -8,7 +8,7 @@ describe('server', function() {
     request(app)
       .post('/api/anything')
       .send('text=help')
-      .send('command=/testing')
+      .send('command=/lion-bot')
       .expect(function(res) {
         expect(res.body.text).to.have.string('help');
         expect(res.body.response_type).to.equal('ephemeral');
@@ -20,7 +20,7 @@ describe('server', function() {
     request(app)
       .post('/api/anything')
       .send('text="0"')
-      .send('command=/testing')
+      .send('command=/lion-bot')
       .expect(function(res){
            expect(res.body.text).to.not.equal("");
       })
@@ -32,7 +32,7 @@ describe('server', function() {
     request(app)
       .post('/api/anything')
       .send('text=""')
-      .send('command=/testing')
+      .send('command=/lion-bot')
       .expect(function(res){
            expect(res.body.text).to.not.equal("");
       })
@@ -43,7 +43,7 @@ describe('server', function() {
     request(app)
       .post('/api/anything')
       .send('text=filtered')
-      .send('command=/testing')
+      .send('command=/lion-bot')
       .expect(function(res) {
         expect(res.body.text).to.have.string('filtered');
         expect(res.body.response_type).to.equal('in_channel');

@@ -29,7 +29,7 @@ app.post('/api/*', (req, res) => {
   //Here we will setup the response JSON object probably with a seperate function
   const RESPONSE_URL = req.body.response_url;
   res.status(200); //We must include this with all JSON object responses
-  if (req.body.command === '/testing') {
+  if (req.body.command === '/lion-bot') {
     if (req.body.text === 'help') {
       let helpText = {
         response_type: `ephemeral`, // only 1 user will see the response
