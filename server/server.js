@@ -21,12 +21,13 @@ const NUM_ITEMS = 5;
 function formateResponse(doc){
   let out = {};
   if(doc.text && doc.text!==""){ out.text=doc.text; }
-  if(doc.img_url && doc.image_url!==""){
+  if(doc.image_url && doc.image_url!==""){
     out.attachments = [{
       image_url : doc.image_url
     }];
   }
-  console.log(out);
+  console.log("Doc:",doc);
+  console.log("Out:",out);
   //You can apply any additional formatting here
   return out;
 };
