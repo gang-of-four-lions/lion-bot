@@ -13,11 +13,7 @@ exports.formatResponse = function(doc, url) {
   }
   if (doc.image_url && doc.image_url !== "") {
     out.attachments = [{
-<<<<<<< HEAD
       image_url: 'http://lion-bot.herokuapp.com/items_img/' + doc.image_url
-=======
-      image_url: "http://lion-bot.herokuapp.com/img/" + doc.image_url
->>>>>>> origin/master
     }];
   }
   console.log("Doc:", doc);

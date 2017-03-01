@@ -37,7 +37,6 @@ app.post('/api/*', (req, res) => {
 
     if (!isNaN(parseInt(req.body.text))) {
       const ind = parseInt(req.body.text);
-<<<<<<< HEAD
       getSpecificDoc(ind, (err, doc) => {
         if (err) {
           console.log(err)
@@ -50,19 +49,7 @@ app.post('/api/*', (req, res) => {
     if (!req.body.text || req.body.text === '') {
       let randomItem = getRandomDoc(res);
       return randomItem;
-=======
-      let specificItem = commands.getSpecificDoc(ind, res);
-      res.status(200).json(specificItem);
-      return;
     }
-
-    if (!req.body.text || req.body.text === '') {
-      let randomItem = commands.getRandomDoc(res);
-      res.status(200).json(randomItem);
-      return;
->>>>>>> origin/master
-    }
-
   }
   responseObject = responseObject || {
     text: 'error: no command'
