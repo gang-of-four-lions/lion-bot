@@ -37,6 +37,7 @@ app.post('/api/*', (req, res) => {
 
     if (!isNaN(parseInt(req.body.text))) {
       const ind = parseInt(req.body.text);
+<<<<<<< HEAD
       getSpecificDoc(ind, (err, doc) => {
         if (err) {
           console.log(err)
@@ -49,6 +50,17 @@ app.post('/api/*', (req, res) => {
     if (!req.body.text || req.body.text === '') {
       let randomItem = getRandomDoc(res);
       return randomItem;
+=======
+      let specificItem = commands.getSpecificDoc(ind, res);
+      res.status(200).json(specificItem);
+      return;
+    }
+
+    if (!req.body.text || req.body.text === '') {
+      let randomItem = commands.getRandomDoc(res);
+      res.status(200).json(randomItem);
+      return;
+>>>>>>> origin/master
     }
 
   }
@@ -62,6 +74,14 @@ app.post('/api/*', (req, res) => {
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
+
+/**function formatImageURL(req, out) {
+  console.log(out);
+  if (out.attachments[0] !== null) {
+    out.attachments = [{ image_url: "http://lion-bot.herokuapp.com/img/" + out.attachments[0].image_url}];
+  }
+  return out;
+}**/
 
 
 module.exports = app;
