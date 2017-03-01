@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+
 //All slash commands are sent as posts by default
 //I think we should setup the routes in /api/ so it won't get in the way of later expansion
 app.post('/api/*', (req, res) => {
@@ -43,13 +44,19 @@ app.post('/api/*', (req, res) => {
       const ind = parseInt(req.body.text);
       getSpecificDoc(ind, (err, doc) => {
         (err) ? (errorObject = err) : (responseObject = doc);
-      })
+        res.status(200).json(formatResponse(responseObject, baseUrl));
+        return;
+      });
+      return;
     }
 
     if (!req.body.text || req.body.text === '') {
       getRandomDoc((err, doc) => {
         (err) ? (errorObject = err) : (responseObject = doc);
+        res.status(200).json(formatResponse(responseObject, baseUrl)); 
+        return;
       })
+      return;
     } else {
       errorObject = 'RANDOM condition is incorrect'
     }
