@@ -53,7 +53,7 @@ app.post('/api/*', (req, res) => {
     }
   }
   responseObject = responseObject || {
-    text: errorObject || 'error. sending default object to you'
+    text: (errorObject || 'error. I don\'t know where')
   }
   res.status(200).json(formatResponse(responseObject, baseUrl))
 });
