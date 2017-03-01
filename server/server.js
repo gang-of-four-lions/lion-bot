@@ -40,12 +40,12 @@ app.post('/api/*', (req, res) => {
     if (!isNaN(parseInt(req.body.text))) {
       const ind = parseInt(req.body.text);
       let specificItem = commands.getSpecificDoc(ind, res);
-      return formatImageURL(req, specificItem);
+      return res.status(200).json(formatImageURL(req, specificItem));
     }
 
     if (!req.body.text || req.body.text === '') {
       let randomItem = commands.getRandomDoc(res);
-      return formatImageURL(req, randomItem);
+      return res.status(200).json(formatImageURL(req, randomItem));
     }
 
   }
