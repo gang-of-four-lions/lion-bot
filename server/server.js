@@ -82,7 +82,8 @@ app.get('/', (req, res) => {
 function getRandomDoc(res) {
   MongoClient.connect(uri, function(err, db) {
     if (err) {
-      return;
+      console.log(err);
+      res.status(200).send("DB error.");
     }
     var col = db.collection("lion-bot");
     col.count().then((cnt) => {
@@ -102,6 +103,7 @@ function getRandomDoc(res) {
 function getSpecificDoc(ind, res) {
   MongoClient.connect(uri, function(err, db) {
     if (err) {
+      console.log(err);
       res.status(200).send("DB Error"); return;
     }
     let col = db.collection("lion-bot");
