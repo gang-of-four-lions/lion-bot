@@ -4,7 +4,7 @@ const app = require('../server/server.js');
 const request = require('supertest');
 
 describe('server', function() {
-  it.only('should return some on specific id', function(done) {
+  it('should return some on specific id', function(done) {
     request(app)
       .post('/api/anything')
       .send('text=3')

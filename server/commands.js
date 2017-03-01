@@ -17,30 +17,29 @@ exports.formatResponse = function(doc, baseUrl) {
       image_url: `${baseUrl}items_img/${doc.image_url}`
     }];
   }
-  out.response_type = doc.response_type;
+  out.response_type = doc.response_type || "ephemeral";
   console.log("Doc:", doc);
   console.log("Out:", out);
   //You can apply any additional formatting here
   return out;
 };
 
-exports.getRandomDoc = function(res) {
+exports.getRandomDoc = function(callback) {
+  console.log('getRandomDoc is invoked');
   MongoClient.connect(uri, function(err, db) {
     if (err) {
-      console.log(err);
-      res.status(200).send("DB error.");
+      return callback("DB error.");
     }
-    var col = db.collection("lion-bot");
+    let col = db.collection("lion-bot");
     col.count().then((cnt) => {
       col.find().skip(Math.floor(Math.random() * (cnt - 1))).limit(1).toArray((err, doc) => {
         if (err) {
-          return null;
+          return callback("another DB error.");
         }
         db.close();
-        let responseObject = exports.formatResponse(doc[0]);
+        let responseObject = doc[0];
         responseObject.response_type = `in_channel`;
-        res.status(200).json(responseObject);
-        return;
+        callback(null, responseObject);
       });
     });
   });
@@ -48,30 +47,22 @@ exports.getRandomDoc = function(res) {
 
 exports.getSpecificDoc = function(ind, callback) {
   console.log('getSpecificDoc is invoked')
-  console.log(typeof MongoClient)
-  console.log(typeof MongoClient.connect)
-
-
   MongoClient.connect(uri, function(err, db) {
     if (err) {
-      console.log('MongoClient.connect(uri, function(err, db)');
       return callback(err);
     }
-    console.log('------');
+    console.log('---and getSpecificDoc keeps working---');
     let col = db.collection("lion-bot");
     col.count().then((cnt) => {
       if (ind < 0 || ind >= cnt) {
-        console.log('(ind < 0 || ind >= cnt)');
         return callback("Invaild index. Select a # between 0 and " + (cnt - 1)); // TODO: use random + msg
       }
       col.find().skip(ind).limit(1).toArray((err, doc) => {
         if (err) {
-          console.log('col.find().skip(ind).limit(1).toArray((err, doc)');
           return callback(err);
         }
         db.close();
         let responseObject = doc[0];
-        console.log(responseObject);
         responseObject.response_type = `in_channel`; // all user in channel will see the response
         callback(null, responseObject);
       });
@@ -93,11 +84,11 @@ exports.getHelpText = function(callback) {
   callback(null, helpText);
 };
 
-exports.getFilteredText = function() {
+exports.getFilteredText = function(callback) {
   let filteredText = {
     response_type: `in_channel`, // all user in channel will see the response
     text: [`some filtered item`,
       `randomly selected from database`].join('\n'),
   };
-  return filteredText;
+  callback(null, filteredText);
 };

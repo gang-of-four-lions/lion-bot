@@ -28,33 +28,27 @@ app.post('/api/*', (req, res) => {
 
     if (req.body.text === 'help') {
       getHelpText((err, doc) => {
-        if (err) {
-          console.log(err)
-        } else {
-          responseObject = doc;
-        }
+        (err) ? console.log(err) : (responseObject = doc);
       })
     }
 
     if (req.body.text === 'filtered') {
-      res.json(getFilteredText());
-      return;
+      getFilteredText((err, doc) => {
+        (err) ? console.log(err) : (responseObject = doc);
+      })
     }
 
-    if (!isNaN(parseInt(req.body.text))) {
+    if (!isNaN(parseInt(req.body.text))) { // some [id] specified
       const ind = parseInt(req.body.text);
       getSpecificDoc(ind, (err, doc) => {
-        if (err) {
-          console.log(err)
-        } else {
-          responseObject = doc;
-        }
+        (err) ? console.log(err) : (responseObject = doc);
       })
     }
 
     if (!req.body.text || req.body.text === '') {
-      let randomItem = getRandomDoc(res);
-      return randomItem;
+      getRandomDoc((err, doc) => {
+        (err) ? console.log(err) : (responseObject = doc);
+      })
     }
   }
   responseObject = responseObject || {
