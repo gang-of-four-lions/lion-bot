@@ -15,6 +15,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 //All slash commands are sent as posts by default
 //I think we should setup the routes in /api/ so it won't get in the way of later expansion
 app.post('/api/*', (req, res) => {
+  const baseUrl = req.protocol + '://' + req.get('host') + '/';
   let responseObject = null;
 
   if (req.body.token !== process.env.TOKEN) {
@@ -54,22 +55,13 @@ app.post('/api/*', (req, res) => {
   responseObject = responseObject || {
     text: 'error: no command'
   }
-  res.status(200).json(formatResponse(responseObject, url))
+  res.status(200).json(formatResponse(responseObject, baseUrl))
 });
 
-//use standard get '/' to deliver the landing page
+// use standard get '/' to deliver the landing page
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
-
-/**function formatImageURL(req, out) {
-  console.log(out);
-  if (out.attachments[0] !== null) {
-    out.attachments = [{ image_url: "http://lion-bot.herokuapp.com/img/" + out.attachments[0].image_url}];
-  }
-  return out;
-}**/
-
 
 module.exports = app;
 module.exports.port = port;
