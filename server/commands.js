@@ -6,12 +6,11 @@ var exports = module.exports = {};
 
 
 
-exports.formatResponse = function(doc) {
+exports.formatResponse = function(doc, url) {
   let out = {};
   if (doc.text && doc.text !== "") {
     out.text = doc.text;
   }
-
   if (doc.image_url && doc.image_url !== "") {
     out.attachments = [{
       image_url: 'http://lion-bot.herokuapp.com/items_img/' + doc.image_url
@@ -44,28 +43,25 @@ exports.getRandomDoc = function(res) {
   });
 };
 
-exports.getSpecificDoc = function(ind, res) {
+exports.getSpecificDoc = function(ind, callback) {
   MongoClient.connect(uri, function(err, db) {
     if (err) {
-      console.log(err);
-      res.status(200).send("DB Error"); return;
+      return callback(err);
     }
     let col = db.collection("lion-bot");
     col.count().then((cnt) => {
       if (ind < 0 || ind >= cnt) {
-        res.status(200).send("Invaild index. Select a # between 0 and " + (cnt - 1)); return;
+        return callback("Invaild index. Select a # between 0 and " + (cnt - 1)); // TODO: use random + msg
       }
       col.find().skip(ind).limit(1).toArray((err, doc) => {
         if (err) {
-          return null;
+          return callback(err);
         }
         db.close();
-        let responseObject = exports.formatResponse(doc[0]);
+        let responseObject = doc[0];
         responseObject.response_type = `in_channel`; // all user in channel will see the response
-        res.status(200).json(responseObject);
-        return;
+        callback(null, responseObject);
       });
-      return;
     });
   });
 };

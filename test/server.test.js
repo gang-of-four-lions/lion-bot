@@ -3,7 +3,7 @@ const expect = require('chai').expect;
 const app = require('../server/server.js');
 const request = require('supertest');
 
-describe('server', function() {
+describe.skip('server', function() {
   it('should return HELP TEXT for the "help" command, with "ephemeral" response type', function(done) {
     request(app)
       .post('/api/anything')
