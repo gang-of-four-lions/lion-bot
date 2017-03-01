@@ -38,7 +38,8 @@ exports.getRandomDoc = function(res) {
         db.close();
         let responseObject = exports.formatResponse(doc[0]);
         responseObject.response_type = `in_channel`;
-        return responseObject;
+        res.status(200).json(responseObject);
+        return;
       });
     });
   });
@@ -62,7 +63,8 @@ exports.getSpecificDoc = function(ind, res) {
         db.close();
         let responseObject = exports.formatResponse(doc[0]);
         responseObject.response_type = `in_channel`; // all user in channel will see the response
-        return responseObject;
+        res.status(200).json(responseObject);
+        return;
       });
       return;
     });
