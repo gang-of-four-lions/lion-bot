@@ -4,16 +4,18 @@ const NUM_ITEMS = 5;
 
 var exports = module.exports = {};
 
-exports.formatResponse = function(doc){
+exports.formatResponse = function(doc) {
   let out = {};
-  if(doc.text && doc.text!==""){ out.text=doc.text; }
-  if(doc.image_url && doc.image_url!==""){
+  if (doc.text && doc.text !== "") {
+    out.text = doc.text;
+  }
+  if (doc.image_url && doc.image_url !== "") {
     out.attachments = [{
-      image_url : doc.image_url
+      image_url: req.protocol + '://' + req.get('host') + '/img/' + doc.image_url
     }];
   }
-  console.log("Doc:",doc);
-  console.log("Out:",out);
+  console.log("Doc:", doc);
+  console.log("Out:", out);
   //You can apply any additional formatting here
   return out;
 };
