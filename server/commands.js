@@ -1,5 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
-const uri = process.env.MONGOURI || require('./config.js').MONGOURI;
+const uri = process.env.MONGOURI; // || require('./config.js').MONGOURI;
 const NUM_ITEMS = 5;
 
 var exports = module.exports = {};
