@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 const NUM_ITEMS = 5;
 
-function formateResponse(doc){
+function formatResponse(doc){
   let out = {};
   if(doc.text && doc.text!==""){ out.text=doc.text; }
   if(doc.image_url && doc.image_url!==""){
@@ -47,55 +47,19 @@ app.post('/api/*', (req, res) => {
     
     
     if (req.body.text === 'help') {
-      let helpText = {
-        response_type: `ephemeral`, // only 1 user will see the response
-        text: [`*lion-bot help*`,
-          `*/lion-bot* shows a random item`,
-          `*/lion-bot [id]* shows the item with the specified id (0 to ${NUM_ITEMS - 1})`,
-          `*/lion-bot filtered* shows a SFW random item`,
-          `*/lion-bot filtered [id]* shows the SFW item with the specified id (0 to ${NUM_ITEMS - 1})`,
-          `*/lion-bot help* shows this text`].join('\n'),
-
-      };
-      res.json(helpText);
+      res.json(getHelpText());
       return;
     }
 
     if (req.body.text === 'filtered') {
-      let filteredText = {
-        response_type: `in_channel`, // all user in channel will see the response
-        text: [`some filtered item`,
-          `randomly selected from database`].join('\n'),
-      };
-      res.json(filteredText);
+      res.json(getFilteredText());
       return;
     }
 
     if (!isNaN(parseInt(req.body.text))) {
       const ind = parseInt(req.body.text);
-      MongoClient.connect(uri, function(err, db) {
-        if (err) {
-          res.status(200).send("DB Error"); return;
-        }
-        let col = db.collection("lion-bot");
-        col.count().then((cnt) => {
-          if (ind < 0 || ind >= cnt) {
-            res.status(200).send("Invaild index. Select a # between 0 and " + (cnt - 1)); return;
-          }
-          col.find().skip(ind).limit(1).toArray((err, doc) => {
-            if (err) {
-              return null;
-            }
-            db.close();
-            let responseObject = formateResponse(doc[0]);
-            responseObject.response_type = `in_channel`; // all user in channel will see the response
-            res.status(200).json(responseObject);
-            return;
-          });
-          return;
-        });
-      });
-      return;
+      let specificItem = getSpecificDoc(ind, res);
+      return specificItem;
     }
 
     if (!req.body.text || req.body.text === '' ) {
@@ -127,21 +91,62 @@ function getRandomDoc(res) {
           return null;
         }
         db.close();
-        let responseObject = formateResponse(doc[0]);
+        let responseObject = formatResponse(doc[0]);
         responseObject.response_type = `in_channel`;
         res.status(200).json(responseObject);
       });
     });
-  /*
-  let rand = db['lion-bot'].aggregate(
-    [{ $sample: { size: 1 } }]
-  );
-  let doc = rand.toArray();
-  db.close();
-  return doc[0].text;
-  */
   });
 }
+
+function getSpecificDoc(ind, res) {
+  MongoClient.connect(uri, function(err, db) {
+    if (err) {
+      res.status(200).send("DB Error"); return;
+    }
+    let col = db.collection("lion-bot");
+    col.count().then((cnt) => {
+      if (ind < 0 || ind >= cnt) {
+        res.status(200).send("Invaild index. Select a # between 0 and " + (cnt - 1)); return;
+      }
+      col.find().skip(ind).limit(1).toArray((err, doc) => {
+        if (err) {
+          return null;
+        }
+        db.close();
+        let responseObject = formatResponse(doc[0]);
+        responseObject.response_type = `in_channel`; // all user in channel will see the response
+        res.status(200).json(responseObject);
+        return;
+      });
+      return;
+    });
+  });
+}
+
+function getHelpText() {
+  let helpText = {
+    response_type: `ephemeral`, // only 1 user will see the response
+    text: [`*lion-bot help*`,
+      `*/lion-bot* shows a random item`,
+      `*/lion-bot [id]* shows the item with the specified id (0 to ${NUM_ITEMS - 1})`,
+      `*/lion-bot filtered* shows a SFW random item`,
+      `*/lion-bot filtered [id]* shows the SFW item with the specified id (0 to ${NUM_ITEMS - 1})`,
+      `*/lion-bot help* shows this text`].join('\n'),
+  };
+  return helpText;
+}
+
+function getFilteredText() {
+  let filteredText = {
+    response_type: `in_channel`, // all user in channel will see the response
+    text: [`some filtered item`,
+      `randomly selected from database`].join('\n'),
+  };
+  return filteredText;
+}
+
+
 
 module.exports = app;
 module.exports.port = port;
