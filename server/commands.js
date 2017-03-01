@@ -14,7 +14,7 @@ exports.formatResponse = function(doc) {
 
   if (doc.image_url && doc.image_url !== "") {
     out.attachments = [{
-      image_url: 'http://lion-bot.herokuapp.com/img/' + doc.image_url
+      image_url: 'http://lion-bot.herokuapp.com/items_img/' + doc.image_url
     }];
   }
   console.log("Doc:", doc);
