@@ -5,7 +5,6 @@ const port = process.env.PORT || 3000;
 const app = express();
 const bodyParser = require('body-parser');
 const commands = require('./commands.js');
-let serverUrl;
 
 
 app.use(bodyParser.urlencoded({
@@ -18,7 +17,6 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 //All slash commands are sent as posts by default
 //I think we should setup the routes in /api/ so it won't get in the way of later expansion
 app.post('/api/*', (req, res) => {
-  serverUrl = req.protocol + '://' + req.get('host')
   if (req.body.token !== process.env.TOKEN) {
     res.end("Invaild token.");
     return;
