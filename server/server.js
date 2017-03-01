@@ -24,8 +24,9 @@ function formateResponse(doc){
   if(doc.img_url && doc.image_url!==""){
     out.attachments = [{
       image_url : doc.image_url
-    }]
+    }];
   }
+  console.log(out);
   //You can apply any additional formatting here
   return out;
 };
@@ -59,7 +60,7 @@ app.post('/api/*', (req, res) => {
       return;
     }
 
-    else if (req.body.text === 'filtered') {
+    if (req.body.text === 'filtered') {
       let filteredText = {
         response_type: `in_channel`, // all user in channel will see the response
         text: [`some filtered item`,
@@ -69,7 +70,7 @@ app.post('/api/*', (req, res) => {
       return;
     }
 
-    else if (!isNaN(parseInt(req.body.text))) {
+    if (!isNaN(parseInt(req.body.text))) {
       const ind = parseInt(req.body.text);
       MongoClient.connect(uri, function(err, db) {
         if (err) {
@@ -96,7 +97,7 @@ app.post('/api/*', (req, res) => {
       return;
     }
 
-    else if (!req.body.text || req.body.text === '' ) {
+    if (!req.body.text || req.body.text === '' ) {
       let randomItem = getRandomDoc(res);
       return randomItem;
     }
