@@ -40,12 +40,12 @@ app.post('/api/*', (req, res) => {
     if (!isNaN(parseInt(req.body.text))) {
       const ind = parseInt(req.body.text);
       let specificItem = commands.getSpecificDoc(ind, res);
-      return specificItem;
+      return formatImageURL(req, specificItem);
     }
 
     if (!req.body.text || req.body.text === '') {
       let randomItem = commands.getRandomDoc(res);
-      return randomItem;
+      return formatImageURL(req, randomItem);
     }
 
   }
@@ -58,6 +58,13 @@ app.post('/api/*', (req, res) => {
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
+
+function formatImageURL(req, out) {
+  if (out.attachments !== null) {
+    out.attachments[0].image_url = req.hostname + out.attachments[0].image_url;
+  }
+  return out;
+}
 
 
 module.exports = app;
