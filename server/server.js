@@ -40,12 +40,14 @@ app.post('/api/*', (req, res) => {
     if (!isNaN(parseInt(req.body.text))) {
       const ind = parseInt(req.body.text);
       let specificItem = commands.getSpecificDoc(ind, res);
-      return res.status(200).json(formatImageURL(req, specificItem));
+      res.status(200).json(formatImageURL(req, specificItem));
+      return;
     }
 
     if (!req.body.text || req.body.text === '') {
       let randomItem = commands.getRandomDoc(res);
-      return res.status(200).json(formatImageURL(req, randomItem));
+      res.status(200).json(formatImageURL(req, randomItem));
+      return;
     }
 
   }
@@ -61,7 +63,7 @@ app.get('/', (req, res) => {
 
 function formatImageURL(req, out) {
   if (out.attachments !== null) {
-    out.attachments[0].image_url = "http://" + req.hostname + out.attachments[0].image_url;
+    out.attachments[0].image_url = "http://lion-bot.herokuapp.com/" + out.attachments[0].image_url;
   }
   return out;
 }
