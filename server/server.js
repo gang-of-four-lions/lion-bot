@@ -17,6 +17,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.post('/api/*', (req, res) => {
   const baseUrl = req.protocol + '://' + req.get('host') + '/';
   let responseObject = null;
+  let errorObject = null;
 
   if (req.body.token !== process.env.TOKEN) {
     res.end("Invaild token.");
@@ -28,31 +29,31 @@ app.post('/api/*', (req, res) => {
 
     if (req.body.text === 'help') {
       getHelpText((err, doc) => {
-        (err) ? console.log(err) : (responseObject = doc);
+        (err) ? (errorObject = err) : (responseObject = doc);
       })
     }
 
     if (req.body.text === 'filtered') {
       getFilteredText((err, doc) => {
-        (err) ? console.log(err) : (responseObject = doc);
+        (err) ? (errorObject = err) : (responseObject = doc);
       })
     }
 
     if (!isNaN(parseInt(req.body.text))) { // some [id] specified
       const ind = parseInt(req.body.text);
       getSpecificDoc(ind, (err, doc) => {
-        (err) ? console.log(err) : (responseObject = doc);
+        (err) ? (errorObject = err) : (responseObject = doc);
       })
     }
 
     if (!req.body.text || req.body.text === '') {
       getRandomDoc((err, doc) => {
-        (err) ? console.log(err) : (responseObject = doc);
+        (err) ? (errorObject = err) : (responseObject = doc);
       })
     }
   }
   responseObject = responseObject || {
-    text: 'error: no command'
+    text: errorObject || 'error. sending default object to you'
   }
   res.status(200).json(formatResponse(responseObject, baseUrl))
 });
