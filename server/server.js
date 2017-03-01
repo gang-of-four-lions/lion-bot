@@ -50,10 +50,12 @@ app.post('/api/*', (req, res) => {
       getRandomDoc((err, doc) => {
         (err) ? (errorObject = err) : (responseObject = doc);
       })
+    } else {
+      errorObject = 'RANDOM condition is incorrect'
     }
   }
   responseObject = responseObject || {
-    text: (errorObject || 'error. I don\'t know where')
+    text: (errorObject || `error. I don\'t know where.\nbtw, url is ${baseUrl}`)
   }
   res.status(200).json(formatResponse(responseObject, baseUrl))
 });

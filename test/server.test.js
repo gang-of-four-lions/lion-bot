@@ -39,6 +39,17 @@ describe('server', function() {
       .end(done);
   });
 
+  it('should return ITEM on NO "text" field, with "in_channel" response type', function(done) {
+    request(app)
+      .post('/api/anything')
+      .send('command=/lion-bot')
+      .expect(function(res) {
+        expect(res.body.text).to.not.equal("");
+      // expect(res.body.response_type).to.equal('in_channel');
+      })
+      .end(done);
+  });
+
   it('should return ITEM on incorrect "text" field, with "in_channel" response type', function(done) {
     request(app)
       .post('/api/anything')
