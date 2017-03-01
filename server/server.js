@@ -5,6 +5,7 @@ const port = process.env.PORT || 3000;
 const app = express();
 const bodyParser = require('body-parser');
 const commands = require('./commands.js');
+let serverUrl;
 
 
 app.use(bodyParser.urlencoded({
@@ -14,10 +15,10 @@ app.use(bodyParser.urlencoded({
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-
 //All slash commands are sent as posts by default
 //I think we should setup the routes in /api/ so it won't get in the way of later expansion
 app.post('/api/*', (req, res) => {
+  serverUrl = req.protocol + '://' + req.get('host')
   if (req.body.token !== process.env.TOKEN) {
     res.end("Invaild token.");
     return;
@@ -27,8 +28,7 @@ app.post('/api/*', (req, res) => {
   const RESPONSE_URL = req.body.response_url;
   res.status(200); //We must include this with all JSON object responses
   if (req.body.command === '/lion-bot') {
-    
-    
+
     if (req.body.text === 'help') {
       res.json(commands.getHelpText());
       return;
@@ -45,7 +45,7 @@ app.post('/api/*', (req, res) => {
       return specificItem;
     }
 
-    if (!req.body.text || req.body.text === '' ) {
+    if (!req.body.text || req.body.text === '') {
       let randomItem = commands.getRandomDoc(res);
       return randomItem;
     }

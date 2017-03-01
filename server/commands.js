@@ -11,7 +11,7 @@ exports.formatResponse = function(doc) {
   }
   if (doc.image_url && doc.image_url !== "") {
     out.attachments = [{
-      image_url: req.protocol + '://' + req.get('host') + '/img/' + doc.image_url
+      image_url: serverUrl + '/img/' + doc.image_url
     }];
   }
   console.log("Doc:", doc);
