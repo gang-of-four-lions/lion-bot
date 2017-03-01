@@ -62,7 +62,8 @@ app.get('/', (req, res) => {
 });
 
 function formatImageURL(req, out) {
-  if (out.attachments !== null) {
+  console.log(out);
+  if (out.attachments[0] !== null) {
     out.attachments[0].image_url = "http://lion-bot.herokuapp.com/" + out.attachments[0].image_url;
   }
   return out;
