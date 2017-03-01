@@ -61,7 +61,7 @@ app.get('/', (req, res) => {
 
 function formatImageURL(req, out) {
   if (out.attachments !== null) {
-    out.attachments[0].image_url = req.hostname + out.attachments[0].image_url;
+    out.attachments[0].image_url = "http://" + req.hostname + out.attachments[0].image_url;
   }
   return out;
 }
