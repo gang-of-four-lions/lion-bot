@@ -27,8 +27,13 @@ app.post('/api/*', (req, res) => {
   if (req.body.command === '/lion-bot') {
 
     if (req.body.text === 'help') {
-      res.json(getHelpText());
-      return;
+      getHelpText((err, doc) => {
+        if (err) {
+          console.log(err)
+        } else {
+          responseObject = doc;
+        }
+      })
     }
 
     if (req.body.text === 'filtered') {

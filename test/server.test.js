@@ -3,7 +3,18 @@ const expect = require('chai').expect;
 const app = require('../server/server.js');
 const request = require('supertest');
 
-describe.skip('server', function() {
+describe('server', function() {
+  it.only('should return some on specific id', function(done) {
+    request(app)
+      .post('/api/anything')
+      .send('text=3')
+      .send('command=/lion-bot')
+      .expect(function(res) {
+        expect(res.body.attachments).to.not.equal("");
+      })
+      .end(done);
+  });
+
   it('should return HELP TEXT for the "help" command, with "ephemeral" response type', function(done) {
     request(app)
       .post('/api/anything')
