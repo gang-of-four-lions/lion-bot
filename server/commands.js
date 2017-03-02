@@ -85,20 +85,28 @@ exports.getHelpText = function(callback) {
 };
 
 exports.getFilteredText = function(callback) {
-  let randomDoc = exports.getRandomDoc(callback);
-  let trueIfObscene = filterText(randomDoc.text);
-  let filteredText = {};
-  if (trueIfObscene) {
-    exports.getFilteredText(callback);
-  } else {
-    filteredText = randomDoc;
-  }
-  /*{
-    response_type: `in_channel`, // all user in channel will see the response
-    text: [`some filtered item`,
-      `randomly selected from database`].join('\n'),
-  };*/
-  callback(null, filteredText);
+  console.log('getFilteredText is invoked');
+  MongoClient.connect(uri, function(err, db) {
+    if (err) {
+      return callback("DB error.");
+    }
+    let col = db.collection("lion-bot");
+    col.count().then((cnt) => {
+      col.find().skip(Math.floor(Math.random() * (cnt - 1))).limit(1).toArray((err, doc) => {
+        if (err) {
+          return callback("another DB error.");
+        }
+        db.close();
+        let responseObject = doc[0];
+        let trueIfObscene = filterText(responseObject.text);
+        if (trueIfObscene) {
+          exports.getFilteredText(callback);
+        }
+        responseObject.response_type = `in_channel`;
+        callback(null, responseObject);
+      });
+    });
+  });
 };
 
 function filterText(text) {
