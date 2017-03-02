@@ -112,22 +112,29 @@ exports.lookUpUser = function(user,callback){
   MongoClient.connect(uri, (err, db) => {
     if (err) {
       console.log("Error connecting to DB in lookUpToken");
-      error="Error connecting to DB.";
+      callback("Error connecting to DB.");
       return;
     }
     let col = db.collection('users');
     col.findOne({ user_id: user },(err,doc)=>{
-      if(err){ console.log("Error in lookUpUser with findOne"); error="Error in looking up user."; return; }
-      if(!doc){ console.log("Invaild user / User not Found: "+ user); error="Error in finding user."; return; }
+      if(err){
+        console.log("Error in lookUpUser with findOne");
+        callback("Error in looking up user.");
+        return;
+      }
+      if(!doc){
+        console.log("Invaild user / User not Found: "+ user);
+        callback("Error in finding user.");
+        return;
+      }
       db.close();
-      result = true;
+      callback(null, true);
       return;
     });
   });
   //Remove this after app setup is done:
   //if(token===process.env.TOKEN){ error=null; result=true; }
   //----------------
-  callback(error,result);
 };
 
 

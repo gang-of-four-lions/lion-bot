@@ -34,7 +34,10 @@ app.post('/api/*', (req, res) => {
   } // Validate token
   
   lookUpUser(req.body.user_id,(err,result)=>{
-    if(err){ res.status(200).send(err); return; }
+    if(err){
+      res.status(200).send(err);
+      return;
+    }
     //else the token is valid...
   
   
