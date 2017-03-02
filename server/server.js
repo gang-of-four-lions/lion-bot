@@ -36,7 +36,7 @@ app.post('/api/*', (req, res) => {
         if (err) {
           respond(res, { text: err.toString() });
         } else {
-          response(res, doc);
+          respond(res, doc);
         }
       });
       return;
