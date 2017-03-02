@@ -106,7 +106,7 @@ exports.getHelpText = function(callback) {
   });
 };
 
-exports.lookUpToken= function(token,callback){
+exports.lookUpUser = function(user,callback){
   let error = null;
   let result = false;
   MongoClient.connect(uri, (err, db) => {
@@ -116,7 +116,7 @@ exports.lookUpToken= function(token,callback){
       return;
     }
     let col = db.collection('users');
-    col.findOne({ access_token:token },(err,doc)=>{
+    col.findOne({ user_id: user },(err,doc)=>{
       if(err){ console.log("Error in lookUpToken with findOne"); error="Error in looking up token."; return; }
       if(!doc){ console.log("Invaild token / Token not Found: "+token); error="Error in finding token."; return; }
       db.close();

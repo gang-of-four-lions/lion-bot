@@ -4,7 +4,7 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const app = express();
 const bodyParser = require('body-parser');
-const {formatResponse, getSpecificDoc, getHelpText, applyFilter, lookUpToken} = require('./commands.js');
+const {formatResponse, getSpecificDoc, getHelpText, applyFilter, lookUpUser} = require('./commands.js');
 
 const oauth = require("./oauth.js");
 
@@ -27,73 +27,73 @@ app.post('/api/*', (req, res) => {
     res.status(200).json(formatResponse(doc, baseUrl));
   }
 
-  //if (req.body.token !== process.env.TOKEN) {
- //   res.end("Invaild token.");
-  //  return;
-  //} // Validate token
+  if (req.body.token !== process.env.TOKEN) {
+   res.end("Invaild token.");
+   return;
+  } // Validate token
   
-  lookUpToken(req.body.token,(err,result)=>{
+  lookUpUser(req.body.user_id,(err,result)=>{
     if(err){ res.status(200).send(err); return; }
     //else the token is valid...
   
   
-  //Here we will setup the response JSON object probably with a seperate function
-  if (req.body.command === '/lion-bot') {
-    // provide help text
-    if (req.body.text === 'help') {
-      getHelpText((err, doc) => {
+    //Here we will setup the response JSON object probably with a seperate function
+    if (req.body.command === '/lion-bot') {
+      // provide help text
+      if (req.body.text === 'help') {
+        getHelpText((err, doc) => {
+          if (err) {
+            respond(res, { text: err.toString() });
+          } else {
+            respond(res, doc);
+          }
+        });
+        return;
+      }
+
+      // filtered random
+      if (req.body.text === 'filtered') {
+        return getSpecificDoc(null, (err, doc) => {
+          if (err) {
+            respond(res, { text: err.toString() });
+          } else {
+            respond(res, applyFilter(doc));
+          }
+        });
+      }
+
+      // filtered [id]
+      const filterRexEx = /filtered.(\d+)/i;
+      const matches = filterRexEx.exec(req.body.text);
+      if (matches) {
+        const ind = +matches[1];
+        return getSpecificDoc(ind, (err, doc) => {
+          if (err) {
+            respond(res, { text: err.toString() });
+          } else {
+            respond(res, applyFilter(doc));
+          }
+        });
+      }
+
+      // some [id] specified
+      if (!isNaN(parseInt(req.body.text))) {
+        const ind = parseInt(req.body.text);
+        return getSpecificDoc(ind, (err, doc) => {
+          (err) ? (errorObject = err) : (respond(res, doc));
+        });
+      }
+      //fallback to random document if no command matches or no command given
+      getSpecificDoc(null, (err, doc) => {
         if (err) {
           respond(res, { text: err.toString() });
         } else {
           respond(res, doc);
         }
       });
-      return;
     }
-
-    // filtered random
-    if (req.body.text === 'filtered') {
-      return getSpecificDoc(null, (err, doc) => {
-        if (err) {
-          respond(res, { text: err.toString() });
-        } else {
-          respond(res, applyFilter(doc));
-        }
-      });
-    }
-
-    // filtered [id]
-    const filterRexEx = /filtered.(\d+)/i;
-    const matches = filterRexEx.exec(req.body.text);
-    if (matches) {
-      const ind = +matches[1];
-      return getSpecificDoc(ind, (err, doc) => {
-        if (err) {
-          respond(res, { text: err.toString() });
-        } else {
-          respond(res, applyFilter(doc));
-        }
-      });
-    }
-
-    // some [id] specified
-    if (!isNaN(parseInt(req.body.text))) {
-      const ind = parseInt(req.body.text);
-      return getSpecificDoc(ind, (err, doc) => {
-        (err) ? (errorObject = err) : (respond(res, doc));
-      });
-    }
-    //fallback to random document if no command matches or no command given
-    getSpecificDoc(null, (err, doc) => {
-      if (err) {
-        respond(res, { text: err.toString() });
-      } else {
-        respond(res, doc);
-      }
-    });
-  }
   
-  });//End of lookUpToken
+  });//End of lookUpUser
   
   
 });
