@@ -117,8 +117,8 @@ exports.lookUpUser = function(user,callback){
     }
     let col = db.collection('users');
     col.findOne({ user_id: user },(err,doc)=>{
-      if(err){ console.log("Error in lookUpToken with findOne"); error="Error in looking up token."; return; }
-      if(!doc){ console.log("Invaild token / Token not Found: "+token); error="Error in finding token."; return; }
+      if(err){ console.log("Error in lookUpUser with findOne"); error="Error in looking up user."; return; }
+      if(!doc){ console.log("Invaild user / User not Found: "+ user_id); error="Error in finding user."; return; }
       db.close();
       result = true;
       return;
