@@ -91,8 +91,7 @@ exports.getHelpText = function(callback) {
   // TODO: throw an error if can not get num items
   let helpText = {
     response_type: `ephemeral`, // only 1 user will see the response
-    text: [`*lion-bot help*`,
-      `*/lion-bot* shows a random item`,
+    text: [`*/lion-bot* shows a random item`,
       `*/lion-bot [id]* shows the item with the specified id (0 to ${NUM_ITEMS - 1})`,
       `*/lion-bot filtered* shows a SFW random item`,
       `*/lion-bot filtered [id]* shows the SFW item with the specified id (0 to ${NUM_ITEMS - 1})`,
