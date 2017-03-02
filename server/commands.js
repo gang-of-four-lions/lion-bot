@@ -125,7 +125,7 @@ exports.lookUpToken= function(token,callback){
     });
   });
   //Remove this after app setup is done:
-  if(token===process.env.TOKEN){ error=null; result=true; }
+  //if(token===process.env.TOKEN){ error=null; result=true; }
   //----------------
   callback(error,result);
 };

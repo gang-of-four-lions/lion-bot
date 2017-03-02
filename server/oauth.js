@@ -43,7 +43,7 @@ router.get('/auth/redirect', (req, res) =>{
         MongoClient.connect(uri, (err, db) => { //Here we save the info returned to later verify that this is a valid user
             if (err) { console.log("Error saving Oauth Response"); res.status(200).res.send("Error -A01");   }
             let col = db.collection('users');
-                col.insertOne(JSONresponse).then(()=>{ db.close(); res.status(200).send("Success!") }); 
+                col.insertOne(JSONresponse).then(()=>{ db.close(); res.status(200).redirect("/") }); 
             });
         }
     });
