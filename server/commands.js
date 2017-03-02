@@ -1,5 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
-const uri = process.env.MONGOURI || require('./config.js').MONGOURI;
+const uri = process.env.MONGOURI //|| require('./config.js').MONGOURI;
 const NUM_ITEMS = 5;
 
 var exports = module.exports = {};
@@ -22,7 +22,7 @@ exports.formatResponse = function(doc, baseUrl) {
     const arr = doc.text.split('\n');
     out.attachments[0].title = arr[0];
     if (arr[1]) {
-      out.sttachments[0].text = arr.slice(1).join('\n');  
+      out.attachments[0].text = arr.slice(1).join('\n');  
     }
   }
   if (doc.image_url && doc.image_url !== "") {

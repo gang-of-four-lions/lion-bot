@@ -15,7 +15,7 @@ describe('server', function() {
       .end(done);
   });
 
-  it('should return HELP TEXT for the "help" command, with "ephemeral" response type', function(done) {
+  it.only('should return HELP TEXT for the "help" command, with "ephemeral" response type', function(done) {
     request(app)
       .post('/api/anything')
       .send('text=help')
