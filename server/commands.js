@@ -11,6 +11,9 @@ exports.formatResponse = function(doc, baseUrl) {
   let out = {};
   out.attachments = [{}];
   out.attachments[0].color = '#e65100';
+  if (doc.ind) {
+    out.attachments[0].text = 'Lion-bot' + ' | ' + 'GitHub' + ' | ' + 'No. ' + doc.id;
+  }
   if (doc.text && doc.text !== "") {
     out.attachments[0].title = doc.text
   }
@@ -46,6 +49,7 @@ exports.getRandomDoc = function(callback) {
         }
         db.close();
         let responseObject = doc[0];
+        responseObject.ind = 99;
         responseObject.response_type = `in_channel`;
         callback(null, responseObject);
       });
@@ -71,6 +75,7 @@ exports.getSpecificDoc = function(ind, callback) {
         }
         db.close();
         let responseObject = doc[0];
+        responseObject.ind = ind;
         responseObject.response_type = `in_channel`; // all user in channel will see the response
         callback(null, responseObject);
       });
