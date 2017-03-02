@@ -4,7 +4,7 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const app = express();
 const bodyParser = require('body-parser');
-const {formatResponse, getRandomDoc, getSpecificDoc, getHelpText, getFilteredText} = require('./commands.js');
+const {formatResponse, getRandomDoc, getSpecificDoc, getHelpText, getFilteredText, getFilteredSpecific} = require('./commands.js');
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -45,6 +45,13 @@ app.post('/api/*', (req, res) => {
       });
       return;
     }
+    
+    let filtReg = new RegExp('/filtered\s(\d*)/');
+    if (filtReg.test(req.body.text)) {
+      let ind = req.body.text.substring(9);
+      getFilteredSpecific(ind, callbackFunc);
+      return;
+    }
 
     if (!isNaN(parseInt(req.body.text))) { // some [id] specified
       const ind = parseInt(req.body.text);
@@ -57,11 +64,7 @@ app.post('/api/*', (req, res) => {
     }
 
     if (!req.body.text || req.body.text === '') {
-      getRandomDoc((err, doc) => {
-        (err) ? (errorObject = err) : (responseObject = doc);
-        respond(res, formatResponse(responseObject, baseUrl)); 
-        return;
-      });
+      getRandomDoc(callbackFunc);
       return;
     } else {
       errorObject = 'RANDOM condition is incorrect';
@@ -77,6 +80,12 @@ app.post('/api/*', (req, res) => {
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
+
+function callbackFunc(err, doc) {
+  (err) ? (errorObject = err) : (responseObject = doc);
+  respond(res, formatResponse(responseObject, baseUrl)); 
+  return;
+}
 
 function respond(res, object) {
   res.status(200).json(object);

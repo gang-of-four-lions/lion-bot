@@ -107,6 +107,32 @@ exports.getFilteredText = function(callback) {
   });
 };
 
+exports.getFilteredSpecific = function(ind, callback) {
+  console.log('getFilteredSpecific is invoked');
+  MongoClient.connect(uri, function(err, db) {
+    if (err) {
+      return callback(err);
+    }
+    console.log('---and getSpecificDoc keeps working---');
+    let col = db.collection("lion-bot");
+    col.count().then((cnt) => {
+      if (ind < 0 || ind >= cnt) {
+        return callback("Invaild index. Select a # between 0 and " + (cnt - 1)); // TODO: use random + msg
+      }
+      col.find().skip(ind).limit(1).toArray((err, doc) => {
+        if (err) {
+          return callback(err);
+        }
+        db.close();
+        let responseObject = doc[0];
+        responseObject.text = filterText(responseObject.text);
+        responseObject.response_type = `in_channel`; // all user in channel will see the response
+        callback(null, responseObject);
+      });
+    });
+  });
+};
+
 function filterText(text) {
   let rx = new RegExp("\\b(fuck|shit|cunt|fucking|fucker|ass|dumbass|bitch)\\b","i");
   return text.replace(rx, "****");
