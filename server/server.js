@@ -27,11 +27,11 @@ app.post('/api/*', (req, res) => {
     res.status(200).json(formatResponse(doc, baseUrl));
   }
 
-  // console.log('body:', req.body, '\ntoken:', process.env.TOKEN);
-  // if (req.body.token !== process.env.TOKEN) {
-  //  res.end("Invaild token.");
-  //  return;
-  // } // Validate token
+  console.log('body:', req.body, '\ntoken:', process.env.TOKEN);
+  if (req.body.token !== process.env.TOKEN) {
+   res.end("Invaild token.");
+   return;
+  } // Validate token
   
   lookUpUser(req.body.user_id,(err,result)=>{
     if(err){ res.status(200).send(err); return; }
