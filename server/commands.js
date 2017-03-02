@@ -11,13 +11,8 @@ exports.formatResponse = function(doc, baseUrl) {
   let out = {};
   out.attachments = [{}];
   out.attachments[0].color = '#e65100';
+  out.attachments[0].mrkdwn_in = ['title', 'text', 'footer'];
 
-  out.attachments[0].footer = [
-    '<http://lion-bot.herokuapp.com/|Lion-bot>',
-    '<http://github.com/gang-of-four-lions/lion-bot|GitHub>',
-    ((doc.ind !== undefined) ? 'No. ' + doc.ind : undefined)
-  ].filter(el => el).join(' | ');
-  
   if (doc.text && doc.text !== "") {
     const arr = doc.text.split('\n');
     out.attachments[0].title = arr[0];
@@ -25,9 +20,17 @@ exports.formatResponse = function(doc, baseUrl) {
       out.attachments[0].text = arr.slice(1).join('\n');  
     }
   }
+
   if (doc.image_url && doc.image_url !== "") {
     out.attachments[0].image_url = `${baseUrl}items_img/${doc.image_url}`
   }
+
+  out.attachments[0].footer = [
+    '<http://lion-bot.herokuapp.com/|Lion-bot>',
+    '<http://github.com/gang-of-four-lions/lion-bot|GitHub>',
+    ((doc.ind !== undefined) ? 'No. ' + doc.ind : undefined)
+  ].filter(el => el).join(' | ');
+
   out.response_type = doc.response_type || "ephemeral";
   console.log("Doc:", doc);
   console.log("Out:", out);
@@ -96,7 +99,8 @@ exports.getHelpText = function(callback) {
   // TODO: throw an error if can not get num items
   let helpText = {
     response_type: `ephemeral`, // only 1 user will see the response
-    text: [`*/lion-bot* shows a random item`,
+    text: [`Lion-bot Help`
+      `*/lion-bot* shows a random item`,
       `*/lion-bot [id]* shows the item with the specified id (0 to ${NUM_ITEMS - 1})`,
       `*/lion-bot filtered* shows a SFW random item`,
       `*/lion-bot filtered [id]* shows the SFW item with the specified id (0 to ${NUM_ITEMS - 1})`,
