@@ -12,7 +12,11 @@ exports.formatResponse = function(doc, baseUrl) {
   out.attachments = [{}];
   out.attachments[0].color = '#e65100';
   if (doc.ind) {
-    out.attachments[0].text = 'Lion-bot' + ' | ' + 'GitHub' + ' | ' + 'No. ' + doc.id;
+    out.attachments[0].footer = [
+      '<http://lion-bot.herokuapp.com/|Lion-bot>',
+      '<http://github.com/gang-of-four-lions/lion-bot|GitHub>',
+      'No. ' + doc.ind
+    ].join(' | ');
   }
   if (doc.text && doc.text !== "") {
     out.attachments[0].title = doc.text
