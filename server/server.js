@@ -30,28 +30,33 @@ app.post('/api/*', (req, res) => {
 
   //Here we will setup the response JSON object probably with a seperate function
   if (req.body.command === '/lion-bot') {
-
+    // provide help text
     if (req.body.text === 'help') {
       getHelpText((err, doc) => {
-        (err) ? (errorObject = err) : (respond(res, doc));
-      });
-      return;
-    }
-
-    if (req.body.text === 'filtered') {
-      getSpecificDoc(null, (err, doc) => {
         if (err) {
-          errorObject = err;
+          respond(res, { text: err.toString() });
         } else {
-          respond(res, applyFilter(doc));
+          response(res, doc);
         }
       });
       return;
     }
 
-    const filterRexEx = /filtered.(\d+)/i; // filtered NNNNN
-    const matches = filterRexEx.exec(req.body.text); // find all matches
-    if (matches) { // if matches then ok, I get first
+    // filtered random
+    if (req.body.text === 'filtered') {
+      return getSpecificDoc(null, (err, doc) => {
+        if (err) {
+          respond(res, { text: err.toString() });
+        } else {
+          respond(res, applyFilter(doc));
+        }
+      });
+    }
+
+    // filtered [id]
+    const filterRexEx = /filtered.(\d+)/i;
+    const matches = filterRexEx.exec(req.body.text);
+    if (matches) {
       const ind = +matches[1];
       return getSpecificDoc(ind, (err, doc) => {
         if (err) {
@@ -62,27 +67,22 @@ app.post('/api/*', (req, res) => {
       });
     }
 
-    if (!isNaN(parseInt(req.body.text))) { // some [id] specified
+    // some [id] specified
+    if (!isNaN(parseInt(req.body.text))) {
       const ind = parseInt(req.body.text);
       return getSpecificDoc(ind, (err, doc) => {
         (err) ? (errorObject = err) : (respond(res, doc));
       });
     }
-
-    if (!errorObject) {
-      return getSpecificDoc(null, (err, doc) => {
-        if (err) {
-          respond(res, { text: err.toString() });
-        } else {
-          respond(res, doc);
-        }
-      });
-    }
+    //fallback to random document if no command matches or no command given
+    getSpecificDoc(null, (err, doc) => {
+      if (err) {
+        respond(res, { text: err.toString() });
+      } else {
+        respond(res, doc);
+      }
+    });
   }
-  responseObject = responseObject || {
-    text: (errorObject || `error. I don\'t know where.\nbtw, url is ${baseUrl}`)
-  };
-  respond(res, formatResponse(responseObject, baseUrl));
 });
 
 // use standard get '/' to deliver the landing page

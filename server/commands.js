@@ -12,6 +12,10 @@ exports.formatResponse = function(doc, baseUrl) {
   out.attachments[0].color = '#e65100';
   out.attachments[0].mrkdwn_in = ['title', 'text', 'footer'];
 
+  // first line of text will be title
+  // for most responses, this is the only line, however
+  // the help command has several lines, but on the first line
+  // should be the title
   if (doc.text && doc.text !== "") {
     const arr = doc.text.split('\n');
     out.attachments[0].title = arr[0];
@@ -24,6 +28,8 @@ exports.formatResponse = function(doc, baseUrl) {
     out.attachments[0].image_url = `${baseUrl}items_img/${doc.image_url}`
   }
 
+  // for the footer, place an ind only if ind is specified, and filter
+  // the array to make sure there is no falsey value in the array
   out.attachments[0].footer = [
     '<http://lion-bot.herokuapp.com/|Lion-bot>',
     '<http://github.com/gang-of-four-lions/lion-bot|GitHub>',
