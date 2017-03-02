@@ -98,10 +98,8 @@ exports.getFilteredText = function(callback) {
         }
         db.close();
         let responseObject = doc[0];
-        let trueIfObscene = filterText(responseObject.text);
-        if (trueIfObscene) {
-          exports.getFilteredText(callback);
-        }
+        let sfwText = filterText(responseObject.text);
+        responseObject.text = sfwText;
         responseObject.response_type = `in_channel`;
         callback(null, responseObject);
       });
@@ -111,5 +109,5 @@ exports.getFilteredText = function(callback) {
 
 function filterText(text) {
   let rx = new RegExp("\\b(fuck|shit|cunt|fucking|fucker|ass|dumbass|bitch)\\b","i");
-  return rx.test(text);
+  return text.replace(rx, "****");
 }
