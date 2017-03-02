@@ -21,7 +21,7 @@ exports.formatResponse = function(doc, baseUrl) {
   if (doc.text && doc.text !== "") {
     const arr = doc.text.split('\n');
     out.attachments[0].title = arr[0];
-    if (doc.text.indexOf('\n') >= 0) {
+    if (arr[1]) {
       out.sttachments[0].text = arr.slice(1).join('\n');  
     }
   }
