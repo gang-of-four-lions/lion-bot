@@ -11,15 +11,19 @@ exports.formatResponse = function(doc, baseUrl) {
   let out = {};
   out.attachments = [{}];
   out.attachments[0].color = '#e65100';
-  if (doc.ind) {
-    out.attachments[0].footer = [
-      '<http://lion-bot.herokuapp.com/|Lion-bot>',
-      '<http://github.com/gang-of-four-lions/lion-bot|GitHub>',
-      'No. ' + doc.ind
-    ].join(' | ');
-  }
+
+  out.attachments[0].footer = [
+    '<http://lion-bot.herokuapp.com/|Lion-bot>',
+    '<http://github.com/gang-of-four-lions/lion-bot|GitHub>',
+    ((doc.ind !== undefined) ? 'No. ' + doc.ind : undefined)
+  ].filter(el => el).join(' | ');
+  
   if (doc.text && doc.text !== "") {
-    out.attachments[0].title = doc.text
+    const arr = doc.text.split('\n');
+    out.attachments[0].title = arr[0];
+    if (doc.text.indexOf('\n') >= 0) {
+      out.sttachments[0].text = arr.slice(1).join('\n');  
+    }
   }
   if (doc.image_url && doc.image_url !== "") {
     out.attachments[0].image_url = `${baseUrl}items_img/${doc.image_url}`
@@ -47,13 +51,14 @@ exports.getRandomDoc = function(callback) {
     }
     let col = db.collection("lion-bot");
     col.count().then((cnt) => {
-      col.find().skip(Math.floor(Math.random() * (cnt - 1))).limit(1).toArray((err, doc) => {
+      const ind = Math.floor(Math.random() * (cnt - 1));
+      col.find().skip(ind).limit(1).toArray((err, doc) => {
         if (err) {
           return callback("another DB error.");
         }
         db.close();
         let responseObject = doc[0];
-        responseObject.ind = 99;
+        responseObject.ind = ind;
         responseObject.response_type = `in_channel`;
         callback(null, responseObject);
       });
