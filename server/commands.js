@@ -1,6 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
 const uri = process.env.MONGOURI //|| require('./config.js').MONGOURI;
-const NUM_ITEMS = 5;
 
 var exports = module.exports = {};
 
@@ -46,29 +45,6 @@ exports.applyFilter = function(doc) {
   return doc;
 }
 
-exports.getRandomDoc = function(callback) {
-  console.log('getRandomDoc is invoked');
-  MongoClient.connect(uri, function(err, db) {
-    if (err) {
-      return callback("DB error.");
-    }
-    let col = db.collection("lion-bot");
-    col.count().then((cnt) => {
-      const ind = Math.floor(Math.random() * (cnt - 1));
-      col.find().skip(ind).limit(1).toArray((err, doc) => {
-        if (err) {
-          return callback("another DB error.");
-        }
-        db.close();
-        let responseObject = doc[0];
-        responseObject.ind = ind;
-        responseObject.response_type = `in_channel`;
-        callback(null, responseObject);
-      });
-    });
-  });
-};
-
 exports.getSpecificDoc = function(ind, callback) {
   console.log('getSpecificDoc is invoked');
   MongoClient.connect(uri, function(err, db) {
@@ -78,8 +54,8 @@ exports.getSpecificDoc = function(ind, callback) {
     console.log('---and getSpecificDoc keeps working---');
     let col = db.collection("lion-bot");
     col.count().then((cnt) => {
-      if (ind < 0 || ind >= cnt) {
-        return callback("Invaild index. Select a # between 0 and " + (cnt - 1)); // TODO: use random + msg
+      if (ind === null || ind < 0 || ind >= cnt) {
+        ind = Math.floor(Math.random() * (cnt - 1));
       }
       col.find().skip(ind).limit(1).toArray((err, doc) => {
         if (err) {
@@ -95,18 +71,30 @@ exports.getSpecificDoc = function(ind, callback) {
   });
 };
 
+const getNumItems = (callback) => {
+  MongoClient.connect(uri, (err, db) => {
+    if (err) {
+      return callback(err);
+    }
+    let col = db.collection('lion-bot');
+    col.count().then(cnt => callback(null, cnt));
+  });
+};
+
 exports.getHelpText = function(callback) {
   // TODO: throw an error if can not get num items
-  let helpText = {
-    response_type: `ephemeral`, // only 1 user will see the response
-    text: [`Lion-bot Help`,
-      `*/lion-bot* shows a random item`,
-      `*/lion-bot [id]* shows the item with the specified id (0 to ${NUM_ITEMS - 1})`,
-      `*/lion-bot filtered* shows a SFW random item`,
-      `*/lion-bot filtered [id]* shows the SFW item with the specified id (0 to ${NUM_ITEMS - 1})`,
-      `*/lion-bot help* shows this text`].join('\n'),
-  };
-  callback(null, helpText);
+  getNumItems((err, count) => {
+    let helpText = {
+      response_type: `ephemeral`, // only 1 user will see the response
+      text: [`Lion-bot Help`,
+        `*/lion-bot* shows a random item`,
+        `*/lion-bot [id]* shows the item with the specified id (0 to ${count - 1})`,
+        `*/lion-bot filtered* shows a SFW random item`,
+        `*/lion-bot filtered [id]* shows the SFW item with the specified id (0 to ${count - 1})`,
+        `*/lion-bot help* shows this text`].join('\n'),
+    };
+    callback(null, helpText);
+  })
 };
 
 

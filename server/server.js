@@ -4,7 +4,7 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const app = express();
 const bodyParser = require('body-parser');
-const {formatResponse, getRandomDoc, getSpecificDoc, getHelpText, applyFilter} = require('./commands.js');
+const {formatResponse, getSpecificDoc, getHelpText, applyFilter} = require('./commands.js');
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -39,7 +39,7 @@ app.post('/api/*', (req, res) => {
     }
 
     if (req.body.text === 'filtered') {
-      getRandomDoc((err, doc) => {
+      getSpecificDoc(null, (err, doc) => {
         if (err) {
           errorObject = err;
         } else {
@@ -72,7 +72,7 @@ app.post('/api/*', (req, res) => {
     }
 
     if (!req.body.text || req.body.text === '') {
-      getRandomDoc((err, doc) => {
+      getSpecificDoc(null, (err, doc) => {
         (err) ? (errorObject = err) : (respond(res, doc));
       });
       return;
