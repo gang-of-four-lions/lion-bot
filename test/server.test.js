@@ -62,7 +62,7 @@ describe('server', function() {
       .end(done);
   });
 
-  it.only('should return filtered text for the "filtered" command, with "in_channel" response type', function(done) {
+  it('should return filtered text for the "filtered" command, with "in_channel" response type', function(done) {
     request(app)
       .post('/api/anything')
       .send('text=filtered')
@@ -72,6 +72,16 @@ describe('server', function() {
         expect(res.body.response_type).to.equal('in_channel');
       })
       .end(done);
+  });
+
+  it('applyFilter should not fucking pass any fucking fucks', function(done) {
+    let applyFilter = require('../server/commands').applyFilter;
+    let obj = {
+      text: 'fuck filter cunt fucking this please'
+    };
+    expect(applyFilter(obj).text).to.not.have.string('fuck');
+
+    done();
   });
 
   it('GET "/" should return the landing page', function(done) {

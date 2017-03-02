@@ -4,7 +4,7 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const app = express();
 const bodyParser = require('body-parser');
-const {formatResponse, getRandomDoc, getSpecificDoc, getHelpText, getFilteredText, getFilteredSpecific, applyFilter} = require('./commands.js');
+const {formatResponse, getRandomDoc, getSpecificDoc, getHelpText, applyFilter} = require('./commands.js');
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -43,8 +43,7 @@ app.post('/api/*', (req, res) => {
         if (err) {
           errorObject = err;
         } else {
-          doc = applyFilter(doc);
-          respond(res, doc);
+          respond(res, applyFilter(doc));
         }
       });
       return;
@@ -58,8 +57,7 @@ app.post('/api/*', (req, res) => {
         if (err) {
           errorObject = err;
         } else {
-          doc = applyFilter(doc);
-          respond(res, doc);
+          respond(res, applyFilter(doc));
         }
       });
       return;
@@ -92,7 +90,6 @@ app.post('/api/*', (req, res) => {
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
-
 
 
 module.exports = app;

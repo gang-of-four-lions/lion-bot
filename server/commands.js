@@ -26,8 +26,9 @@ exports.formatResponse = function(doc, baseUrl) {
 
 exports.applyFilter = function(doc) {
   if (doc.text && doc.text !== "") {
-    let rx = new RegExp("\\b(fuck|shit|cunt|fucking|fucker|ass|dumbass|bitch)\\b", "i");
-    doc.text.replace(rx, "****");
+    //let rx = new RegExp("\\b(fuck|shit|cunt|fucking|fucker|ass|dumbass|bitch)\\b", "i");
+    const rx = /\b(fuck|shit|cunt|fucking|fucker|ass|dumbass|bitch)/gi;
+    doc.text = doc.text.replace(rx, "****");
   }
   return doc;
 }
