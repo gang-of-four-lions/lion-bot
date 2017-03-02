@@ -4,11 +4,15 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const app = express();
 const bodyParser = require('body-parser');
-const {formatResponse, getSpecificDoc, getHelpText, applyFilter} = require('./commands.js');
+const {formatResponse, getSpecificDoc, getHelpText, applyFilter, lookUpToken} = require('./commands.js');
+
+const oauth = require("./oauth.js");
 
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
+app.use("/",oauth); //Oauth2 routes
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
@@ -23,11 +27,16 @@ app.post('/api/*', (req, res) => {
     res.status(200).json(formatResponse(doc, baseUrl));
   }
 
-  if (req.body.token !== process.env.TOKEN) {
-    res.end("Invaild token.");
-    return;
-  } // Validate token
-
+  //if (req.body.token !== process.env.TOKEN) {
+ //   res.end("Invaild token.");
+  //  return;
+  //} // Validate token
+  
+  lookUpToken(req.body.token,(err,result)=>{
+    if(err){ res.status(200).send(err); return; }
+    //else the token is valid...
+  
+  
   //Here we will setup the response JSON object probably with a seperate function
   if (req.body.command === '/lion-bot') {
     // provide help text
@@ -83,6 +92,10 @@ app.post('/api/*', (req, res) => {
       }
     });
   }
+  
+  });//End of lookUpToken
+  
+  
 });
 
 // use standard get '/' to deliver the landing page
