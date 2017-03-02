@@ -27,6 +27,7 @@ app.post('/api/*', (req, res) => {
     res.status(200).json(formatResponse(doc, baseUrl));
   }
 
+  console.log('body:', req.body, '\ntoken:', process.env.TOKEN);
   if (req.body.token !== process.env.TOKEN) {
    res.end("Invaild token.");
    return;
