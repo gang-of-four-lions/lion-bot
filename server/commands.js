@@ -46,7 +46,7 @@ exports.getRandomDoc = function(callback) {
 };
 
 exports.getSpecificDoc = function(ind, callback) {
-  console.log('getSpecificDoc is invoked')
+  console.log('getSpecificDoc is invoked');
   MongoClient.connect(uri, function(err, db) {
     if (err) {
       return callback(err);
@@ -85,10 +85,23 @@ exports.getHelpText = function(callback) {
 };
 
 exports.getFilteredText = function(callback) {
-  let filteredText = {
+  let randomDoc = exports.getRandomDoc(callback);
+  let trueIfObscene = filterText(randomDoc.text);
+  let filteredText = {};
+  if (trueIfObscene) {
+    exports.getFilteredText(callback);
+  } else {
+    filteredText = randomDoc;
+  }
+  /*{
     response_type: `in_channel`, // all user in channel will see the response
     text: [`some filtered item`,
       `randomly selected from database`].join('\n'),
-  };
+  };*/
   callback(null, filteredText);
 };
+
+function filterText(text) {
+  let rx = new RegExp("\\b(fuck|shit|cunt|fucking|fucker|ass|dumbass|bitch)\\b","i");
+  return rx.test(text);
+}
