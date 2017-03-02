@@ -34,7 +34,7 @@ describe('server', function() {
       .send('command=/lion-bot')
       .expect(function(res) {
         expect(res.body.text).to.not.equal("");
-      // expect(res.body.response_type).to.equal('in_channel');
+        expect(res.body.response_type).to.equal('in_channel');
       })
       .end(done);
   });
@@ -45,7 +45,7 @@ describe('server', function() {
       .send('command=/lion-bot')
       .expect(function(res) {
         expect(res.body.text).to.not.equal("");
-      // expect(res.body.response_type).to.equal('in_channel');
+        expect(res.body.response_type).to.equal('in_channel');
       })
       .end(done);
   });
@@ -57,12 +57,12 @@ describe('server', function() {
       .send('command=/lion-bot')
       .expect(function(res) {
         expect(res.body.text).to.not.equal("");
-      // expect(res.body.response_type).to.equal('in_channel');
+        expect(res.body.response_type).to.equal('in_channel');
       })
       .end(done);
   });
 
-  it('should return filtered text for the "filtered" command, with "in_channel" response type', function(done) {
+  it.only('should return filtered text for the "filtered" command, with "in_channel" response type', function(done) {
     request(app)
       .post('/api/anything')
       .send('text=filtered')

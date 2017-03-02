@@ -1,5 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
-const uri = process.env.MONGOURI; // || require('./config.js').MONGOURI;
+const uri = process.env.MONGOURI || require('./config.js').MONGOURI;
 const NUM_ITEMS = 5;
 
 var exports = module.exports = {};
@@ -23,6 +23,14 @@ exports.formatResponse = function(doc, baseUrl) {
   //You can apply any additional formatting here
   return out;
 };
+
+exports.applyFilter = function(doc) {
+  if (doc.text && doc.text !== "") {
+    let rx = new RegExp("\\b(fuck|shit|cunt|fucking|fucker|ass|dumbass|bitch)\\b", "i");
+    doc.text.replace(rx, "****");
+  }
+  return doc;
+}
 
 exports.getRandomDoc = function(callback) {
   console.log('getRandomDoc is invoked');
@@ -84,56 +92,52 @@ exports.getHelpText = function(callback) {
   callback(null, helpText);
 };
 
-exports.getFilteredText = function(callback) {
-  console.log('getFilteredText is invoked');
-  MongoClient.connect(uri, function(err, db) {
-    if (err) {
-      return callback("DB error.");
-    }
-    let col = db.collection("lion-bot");
-    col.count().then((cnt) => {
-      col.find().skip(Math.floor(Math.random() * (cnt - 1))).limit(1).toArray((err, doc) => {
-        if (err) {
-          return callback("another DB error.");
-        }
-        db.close();
-        let responseObject = doc[0];
-        let sfwText = filterText(responseObject.text);
-        responseObject.text = sfwText;
-        responseObject.response_type = `in_channel`;
-        callback(null, responseObject);
-      });
-    });
-  });
-};
+// exports.getFilteredText = function(callback) {
+//   console.log('getFilteredText is invoked');
+//   MongoClient.connect(uri, function(err, db) {
+//     if (err) {
+//       return callback("DB error.");
+//     }
+//     let col = db.collection("lion-bot");
+//     col.count().then((cnt) => {
+//       col.find().skip(Math.floor(Math.random() * (cnt - 1))).limit(1).toArray((err, doc) => {
+//         if (err) {
+//           return callback("another DB error.");
+//         }
+//         db.close();
+//         let responseObject = doc[0];
+//         let sfwText = filterText(responseObject.text);
+//         responseObject.text = sfwText;
+//         responseObject.response_type = `in_channel`;
+//         callback(null, responseObject);
+//       });
+//     });
+//   });
+// };
 
-exports.getFilteredSpecific = function(ind, callback) {
-  console.log('getFilteredSpecific is invoked');
-  MongoClient.connect(uri, function(err, db) {
-    if (err) {
-      return callback(err);
-    }
-    console.log('---and getSpecificDoc keeps working---');
-    let col = db.collection("lion-bot");
-    col.count().then((cnt) => {
-      if (ind < 0 || ind >= cnt) {
-        return callback("Invaild index. Select a # between 0 and " + (cnt - 1)); // TODO: use random + msg
-      }
-      col.find().skip(ind).limit(1).toArray((err, doc) => {
-        if (err) {
-          return callback(err);
-        }
-        db.close();
-        let responseObject = doc[0];
-        responseObject.text = filterText(responseObject.text);
-        responseObject.response_type = `in_channel`; // all user in channel will see the response
-        callback(null, responseObject);
-      });
-    });
-  });
-};
+// exports.getFilteredSpecific = function(ind, callback) {
+//   console.log('getFilteredSpecific is invoked');
+//   MongoClient.connect(uri, function(err, db) {
+//     if (err) {
+//       return callback(err);
+//     }
+//     console.log('---and getSpecificDoc keeps working---');
+//     let col = db.collection("lion-bot");
+//     col.count().then((cnt) => {
+//       if (ind < 0 || ind >= cnt) {
+//         return callback("Invaild index. Select a # between 0 and " + (cnt - 1)); // TODO: use random + msg
+//       }
+//       col.find().skip(ind).limit(1).toArray((err, doc) => {
+//         if (err) {
+//           return callback(err);
+//         }
+//         db.close();
+//         let responseObject = doc[0];
+//         responseObject.text = filterText(responseObject.text);
+//         responseObject.response_type = `in_channel`; // all user in channel will see the response
+//         callback(null, responseObject);
+//       });
+//     });
+//   });
+// };
 
-function filterText(text) {
-  let rx = new RegExp("\\b(fuck|shit|cunt|fucking|fucker|ass|dumbass|bitch)\\b","i");
-  return text.replace(rx, "****");
-}
