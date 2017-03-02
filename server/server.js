@@ -31,20 +31,26 @@ app.post('/api/*', (req, res) => {
     if (req.body.text === 'help') {
       getHelpText((err, doc) => {
         (err) ? (errorObject = err) : (responseObject = doc);
-      })
+        respond(res, formatResponse(responseObject, baseUrl));
+        return;
+      });
+      return;
     }
 
     if (req.body.text === 'filtered') {
       getFilteredText((err, doc) => {
         (err) ? (errorObject = err) : (responseObject = doc);
-      })
+        respond(res, formatResponse(responseObject, baseUrl));
+        return;
+      });
+      return;
     }
 
     if (!isNaN(parseInt(req.body.text))) { // some [id] specified
       const ind = parseInt(req.body.text);
       getSpecificDoc(ind, (err, doc) => {
         (err) ? (errorObject = err) : (responseObject = doc);
-        res.status(200).json(formatResponse(responseObject, baseUrl));
+        respond(res, formatResponse(responseObject, baseUrl));
         return;
       });
       return;
@@ -53,24 +59,28 @@ app.post('/api/*', (req, res) => {
     if (!req.body.text || req.body.text === '') {
       getRandomDoc((err, doc) => {
         (err) ? (errorObject = err) : (responseObject = doc);
-        res.status(200).json(formatResponse(responseObject, baseUrl)); 
+        respond(res, formatResponse(responseObject, baseUrl)); 
         return;
-      })
+      });
       return;
     } else {
-      errorObject = 'RANDOM condition is incorrect'
+      errorObject = 'RANDOM condition is incorrect';
     }
   }
   responseObject = responseObject || {
     text: (errorObject || `error. I don\'t know where.\nbtw, url is ${baseUrl}`)
-  }
-  res.status(200).json(formatResponse(responseObject, baseUrl))
+  };
+  respond(res, formatResponse(responseObject, baseUrl));
 });
 
 // use standard get '/' to deliver the landing page
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
+
+function respond(res, object) {
+  res.status(200).json(object);
+}
 
 module.exports = app;
 module.exports.port = port;
