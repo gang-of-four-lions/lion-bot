@@ -54,6 +54,7 @@ app.post('/api/*', (req, res) => {
         respond(res, formatResponse(responseObject, baseUrl));
         return;
       });
+      return;
     }
 
     if (!isNaN(parseInt(req.body.text))) { // some [id] specified
@@ -72,6 +73,7 @@ app.post('/api/*', (req, res) => {
         respond(res, formatResponse(responseObject, baseUrl));
         return;
       });
+      return;
     } else {
       errorObject = 'RANDOM condition is incorrect';
     }
