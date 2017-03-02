@@ -49,3 +49,5 @@ router.get('/auth/redirect', (req, res) =>{
     });
 
 });
+
+module.exports = router;
