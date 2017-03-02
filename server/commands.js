@@ -9,13 +9,13 @@ console.log(uri);
 exports.formatResponse = function(doc, baseUrl) {
   console.log('formatResponse is invoked');
   let out = {};
+  out.attachments = [{}];
+  out.attachments[0].color = '#e65100';
   if (doc.text && doc.text !== "") {
-    out.text = doc.text;
+    out.attachments[0].title = doc.text
   }
   if (doc.image_url && doc.image_url !== "") {
-    out.attachments = [{
-      image_url: `${baseUrl}items_img/${doc.image_url}`
-    }];
+    out.attachments[0].image_url = `${baseUrl}items_img/${doc.image_url}`
   }
   out.response_type = doc.response_type || "ephemeral";
   console.log("Doc:", doc);
@@ -26,7 +26,6 @@ exports.formatResponse = function(doc, baseUrl) {
 
 exports.applyFilter = function(doc) {
   if (doc.text && doc.text !== "") {
-    //let rx = new RegExp("\\b(fuck|shit|cunt|fucking|fucker|ass|dumbass|bitch)\\b", "i");
     const rx = /\b(fuck|shit|cunt|fucking|fucker|ass|dumbass|bitch)/gi;
     doc.text = doc.text.replace(rx, "****");
   }
@@ -93,52 +92,4 @@ exports.getHelpText = function(callback) {
   callback(null, helpText);
 };
 
-// exports.getFilteredText = function(callback) {
-//   console.log('getFilteredText is invoked');
-//   MongoClient.connect(uri, function(err, db) {
-//     if (err) {
-//       return callback("DB error.");
-//     }
-//     let col = db.collection("lion-bot");
-//     col.count().then((cnt) => {
-//       col.find().skip(Math.floor(Math.random() * (cnt - 1))).limit(1).toArray((err, doc) => {
-//         if (err) {
-//           return callback("another DB error.");
-//         }
-//         db.close();
-//         let responseObject = doc[0];
-//         let sfwText = filterText(responseObject.text);
-//         responseObject.text = sfwText;
-//         responseObject.response_type = `in_channel`;
-//         callback(null, responseObject);
-//       });
-//     });
-//   });
-// };
-
-// exports.getFilteredSpecific = function(ind, callback) {
-//   console.log('getFilteredSpecific is invoked');
-//   MongoClient.connect(uri, function(err, db) {
-//     if (err) {
-//       return callback(err);
-//     }
-//     console.log('---and getSpecificDoc keeps working---');
-//     let col = db.collection("lion-bot");
-//     col.count().then((cnt) => {
-//       if (ind < 0 || ind >= cnt) {
-//         return callback("Invaild index. Select a # between 0 and " + (cnt - 1)); // TODO: use random + msg
-//       }
-//       col.find().skip(ind).limit(1).toArray((err, doc) => {
-//         if (err) {
-//           return callback(err);
-//         }
-//         db.close();
-//         let responseObject = doc[0];
-//         responseObject.text = filterText(responseObject.text);
-//         responseObject.response_type = `in_channel`; // all user in channel will see the response
-//         callback(null, responseObject);
-//       });
-//     });
-//   });
-// };
 
