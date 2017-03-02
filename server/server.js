@@ -53,31 +53,30 @@ app.post('/api/*', (req, res) => {
     const matches = filterRexEx.exec(req.body.text); // find all matches
     if (matches) { // if matches then ok, I get first
       const ind = +matches[1];
-      getSpecificDoc(ind, (err, doc) => {
+      return getSpecificDoc(ind, (err, doc) => {
         if (err) {
-          errorObject = err;
+          respond(res, { text: err.toString() });
         } else {
           respond(res, applyFilter(doc));
         }
       });
-      return;
     }
 
     if (!isNaN(parseInt(req.body.text))) { // some [id] specified
       const ind = parseInt(req.body.text);
-      getSpecificDoc(ind, (err, doc) => {
+      return getSpecificDoc(ind, (err, doc) => {
         (err) ? (errorObject = err) : (respond(res, doc));
       });
-      return;
     }
 
-    if (!req.body.text || req.body.text === '') {
-      getSpecificDoc(null, (err, doc) => {
-        (err) ? (errorObject = err) : (respond(res, doc));
+    if (!errorObject) {
+      return getSpecificDoc(null, (err, doc) => {
+        if (err) {
+          respond(res, { text: err.toString() });
+        } else {
+          respond(res, doc);
+        }
       });
-      return;
-    } else {
-      errorObject = 'RANDOM condition is incorrect';
     }
   }
   responseObject = responseObject || {

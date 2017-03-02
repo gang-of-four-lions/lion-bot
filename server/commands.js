@@ -71,19 +71,22 @@ exports.getSpecificDoc = function(ind, callback) {
   });
 };
 
-const getNumItems = (callback) => {
+const getItemsCount = (callback) => {
   MongoClient.connect(uri, (err, db) => {
     if (err) {
       return callback(err);
     }
     let col = db.collection('lion-bot');
-    col.count().then(cnt => callback(null, cnt));
+    col.count().then(cnt => {
+      db.close();
+      callback(null, cnt);
+    });
   });
 };
 
 exports.getHelpText = function(callback) {
   // TODO: throw an error if can not get num items
-  getNumItems((err, count) => {
+  getItemsCount((err, count) => {
     let helpText = {
       response_type: `ephemeral`, // only 1 user will see the response
       text: [`Lion-bot Help`,
