@@ -49,8 +49,11 @@ app.post('/api/*', (req, res) => {
     let filtReg = new RegExp('/filtered\s(\d*)/');
     if (filtReg.test(req.body.text)) {
       let ind = req.body.text.substring(9);
-      getFilteredSpecific(ind, callbackFunc);
-      return;
+      getFilteredSpecific(ind, (err, doc) => {
+        (err) ? (errorObject = err) : (responseObject = doc);
+        respond(res, formatResponse(responseObject, baseUrl));
+        return;
+      });
     }
 
     if (!isNaN(parseInt(req.body.text))) { // some [id] specified
@@ -64,8 +67,11 @@ app.post('/api/*', (req, res) => {
     }
 
     if (!req.body.text || req.body.text === '') {
-      getRandomDoc(callbackFunc);
-      return;
+      getRandomDoc((err, doc) => {
+        (err) ? (errorObject = err) : (responseObject = doc);
+        respond(res, formatResponse(responseObject, baseUrl));
+        return;
+      });
     } else {
       errorObject = 'RANDOM condition is incorrect';
     }
@@ -80,12 +86,6 @@ app.post('/api/*', (req, res) => {
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
-
-function callbackFunc(err, doc) {
-  (err) ? (errorObject = err) : (responseObject = doc);
-  respond(res, formatResponse(responseObject, baseUrl)); 
-  return;
-}
 
 function respond(res, object) {
   res.status(200).json(object);
