@@ -190,4 +190,49 @@ em {
   transition: opacity 0.5s ease;
 }
 
+@keyframes successAnimation {
+	from { 
+    background-position: 0 100%; 
+    background-size: 1%;
+    }
+	to { 
+    background-position: 100% 0; 
+    background-size: 100%;
+    }
+}
+@keyframes failureAnimation {
+	from { 
+    background-position: 0 100%; 
+    background-size: 100%;
+    }
+	to { 
+    background-position: 100% 0; 
+    background-size: 1%;
+    }
+}
+.splash {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding-top: 25vh;
+  text-align: center;
+  background: #FFF;
+  z-index: 99999;
+  background-image: url(./img/lionbot-background.png); 
+  background-position-x: 100%;
+  background-size: 25%;
+  
+}
+.splash-success {
+  color: #000;
+  background-blend-mode: normal;
+  animation: successAnimation 80s linear infinite;
+}
 
+.splash-failure {
+  color: #000;
+  background-blend-mode: exclusion;
+  animation: failureAnimation 80s linear infinite;
+}
