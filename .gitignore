@@ -37,4 +37,5 @@ jspm_packages
 .node_repl_history
 
 # MONGOURI and other conf
+server/config.js
 .env
