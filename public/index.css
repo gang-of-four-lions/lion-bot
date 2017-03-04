@@ -1,4 +1,4 @@
-/* CSS RESET */
+/* BEGIN CSS RESET */
 
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
@@ -107,7 +107,7 @@ em {
 }
 
 .section {
-  max-width: 800px;
+  max-width: 810px;
   margin: 0 auto;
   padding: 0 .5em;
   transform: skewY(.5deg);
@@ -141,7 +141,7 @@ em {
 }
 #screenshot {
   width: 100%;
-  max-width: 473px;
+  max-width: 550px
 }
 #usage_wrap {
   padding-top: 2em;
@@ -161,7 +161,6 @@ em {
 #credits_wrap {
   padding-top: 1em;
   padding-bottom: 1em;
-  /*margin-bottom: 2em;*/
   color: #fafafa;
   font-size: .9em;
   background-color: #212121;
