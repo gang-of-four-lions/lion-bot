@@ -4,6 +4,7 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const app = express();
 const bodyParser = require('body-parser');
+require('dotenv').config();
 
 const { formatResponse, lookUpUser } = require('./commands');
 const getRoute = require('./routes');
