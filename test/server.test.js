@@ -4,7 +4,7 @@ const app = require('../server/server.js');
 const request = require('supertest');
 
 describe('server', function() {
-  it('should return some on specific id', function(done) {
+  it('should return SPECIFIC ITEM on specific [id]', function(done) {
     request(app)
       .post('/api/anything')
       .send('text=3')
@@ -74,13 +74,12 @@ describe('server', function() {
       .end(done);
   });
 
-  it('applyFilter should not fucking pass any fucking fucks', function(done) {
+  it('applyFilter() should not fucking pass any fucking fucks', function(done) {
     let applyFilter = require('../server/commands').applyFilter;
     let obj = {
-      text: 'fuck filter cunt fucking this please'
+      text: 'fuck filter this fucking cunt please'
     };
     expect(applyFilter(obj).text).to.not.have.string('fuck');
-
     done();
   });
 
