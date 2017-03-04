@@ -10,18 +10,18 @@ describe('server', function() {
       .send('text=3')
       .send('command=/lion-bot')
       .expect(function(res) {
-        expect(res.body.attachments).to.not.equal("");
+        expect(res.body.attachments[0].footer).to.include('3');
       })
       .end(done);
   });
 
-  it.only('should return HELP TEXT for the "help" command, with "ephemeral" response type', function(done) {
+  it('should return HELP TEXT for the "help" command, with "ephemeral" response type', function(done) {
     request(app)
       .post('/api/anything')
       .send('text=help')
       .send('command=/lion-bot')
       .expect(function(res) {
-        expect(res.body.text).to.have.string('/lion-bot'); // help text always contains command names
+        expect(res.body.attachments[0].text).to.have.string('/lion-bot'); // help text always contains command names
         expect(res.body.response_type).to.equal('ephemeral');
       })
       .end(done);
@@ -33,7 +33,7 @@ describe('server', function() {
       .send('text=""')
       .send('command=/lion-bot')
       .expect(function(res) {
-        expect(res.body.text).to.not.equal("");
+        expect(res.body.attachments[0].footer).to.include('No.');
         expect(res.body.response_type).to.equal('in_channel');
       })
       .end(done);
@@ -44,7 +44,7 @@ describe('server', function() {
       .post('/api/anything')
       .send('command=/lion-bot')
       .expect(function(res) {
-        expect(res.body.text).to.not.equal("");
+        expect(res.body.attachments[0].footer).to.include('No.');
         expect(res.body.response_type).to.equal('in_channel');
       })
       .end(done);
@@ -56,19 +56,19 @@ describe('server', function() {
       .send('text="some incorrect text"')
       .send('command=/lion-bot')
       .expect(function(res) {
-        expect(res.body.text).to.not.equal("");
+        expect(res.body.attachments[0].footer).to.include('No.');
         expect(res.body.response_type).to.equal('in_channel');
       })
       .end(done);
   });
 
-  it('should return filtered text for the "filtered" command, with "in_channel" response type', function(done) {
+  it('should return an ITEM for the "filtered" command, with "in_channel" response type', function(done) {
     request(app)
       .post('/api/anything')
       .send('text=filtered')
       .send('command=/lion-bot')
       .expect(function(res) {
-        expect(res.body.text).to.have.string('filtered');
+        expect(res.body.attachments[0].footer).to.include('No.');
         expect(res.body.response_type).to.equal('in_channel');
       })
       .end(done);

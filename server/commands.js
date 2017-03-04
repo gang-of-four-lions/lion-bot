@@ -1,12 +1,9 @@
 const MongoClient = require('mongodb').MongoClient;
-const uri = process.env.MONGOURI //|| require('./config.js').MONGOURI;
+const uri = process.env.MONGOURI || require('./config.js').MONGOURI;
 
 var exports = module.exports = {};
 
-console.log(uri);
-
 exports.formatResponse = function(doc, baseUrl) {
-  console.log('formatResponse is invoked');
   let out = {};
   out.attachments = [{}];
   out.attachments[0].color = '#e65100';
@@ -37,9 +34,6 @@ exports.formatResponse = function(doc, baseUrl) {
   ].filter(el => el).join(' | ');
 
   out.response_type = doc.response_type || "ephemeral";
-  console.log("Doc:", doc);
-  console.log("Out:", out);
-  //You can apply any additional formatting here
   return out;
 };
 
@@ -51,60 +45,51 @@ exports.applyFilter = function(doc) {
   return doc;
 }
 
-exports.getSpecificDoc = function(ind, callback) {
-  console.log('getSpecificDoc is invoked');
-  MongoClient.connect(uri, function(err, db) {
-    if (err) {
-      return callback(err);
-    }
-    console.log('---and getSpecificDoc keeps working---');
-    let col = db.collection("lion-bot");
-    col.count().then((cnt) => {
-      if (ind === null || ind < 0 || ind >= cnt) {
-        ind = Math.floor(Math.random() * (cnt - 1));
-      }
-      col.find().skip(ind).limit(1).toArray((err, doc) => {
-        if (err) {
-          return callback(err);
-        }
-        db.close();
-        let responseObject = doc[0];
-        responseObject.ind = ind;
-        responseObject.response_type = `in_channel`; // all user in channel will see the response
-        callback(null, responseObject);
+exports.getSpecificDoc = (ind = null) => {
+  return MongoClient.connect(uri)
+    .then(db => {
+      const col = db.collection('lion-bot');
+      return col.count().then(cnt => {
+        if (ind === null || ind < 0 || ind >= cnt) {
+          ind = Math.floor(Math.random() * (cnt - 1));
+        } 
+        return col.find().skip(ind).limit(1).toArray().then(docs => {
+          db.close();
+          let responseObject = docs[0];
+          responseObject.ind = ind;
+          responseObject.response_type = 'in_channel';
+          return responseObject;
+        });
       });
     });
-  });
 };
 
-const getItemsCount = (callback) => {
-  MongoClient.connect(uri, (err, db) => {
-    if (err) {
-      return callback(err);
-    }
-    let col = db.collection('lion-bot');
-    col.count().then(cnt => {
-      db.close();
-      callback(null, cnt);
+const getItemsCount = () => {
+  return MongoClient.connect(uri)
+    .then(db => {
+      const col = db.collection('lion-bot');
+      return col.count()
+        .then(cnt => {
+          db.close();
+          return cnt;
+        });
     });
-  });
 };
 
-exports.getHelpText = function(callback) {
-  // TODO: throw an error if can not get num items
-  getItemsCount((err, count) => {
-    let helpText = {
-      response_type: `ephemeral`, // only 1 user will see the response
-      text: [`Lion-bot Help`,
+exports.getHelpText = () => {
+  return getItemsCount()
+    .then(count => {
+      return {
+        response_type: `ephemeral`, // only 1 user will see the response
+        text: [`Lion-bot Help`,
         `*/lion-bot* shows a random item`,
         `*/lion-bot [id]* shows the item with the specified id (0 to ${count - 1})`,
         `*/lion-bot filtered* shows a SFW random item`,
         `*/lion-bot filtered [id]* shows the SFW item with the specified id (0 to ${count - 1})`,
         `*/lion-bot help* shows this text`].join('\n'),
-    };
-    callback(null, helpText);
-  });
-};
+      };
+    })
+}
 
 exports.lookUpUser = function(user,callback){
   let error = null;
@@ -136,5 +121,3 @@ exports.lookUpUser = function(user,callback){
   //if(token===process.env.TOKEN){ error=null; result=true; }
   //----------------
 };
-
-
